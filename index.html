@@ -389,56 +389,78 @@
   const audioHint = document.getElementById('audioHint');
   const audioHintText = document.getElementById('audioHintText');
 
-  // ── AUDIO ENGINE (真实音频驱动) ──
+// ── AUDIO ENGINE (真实音频驱动) ──
 
-const AUDIO_VOCAL = 'asset/music/speical - creep.mp3'; // 1. 人声清唱
-const AUDIO_CHUG  = 'asset/music/闷音 - creep.mp3';   // 2. 闷音循环
-const AUDIO_SWELL = 'asset/music/creep - creep.mp3';  // 3. 进入主站的 weirdo 减弱
+// 📥 1. 这里已经更新为你最新的长版音频路径
+const AUDIO_VOCAL = 'asset/music/speical - creep.mp3';    // 第一阶段：人声清唱
+const AUDIO_CHUG  = 'asset/music/闷音 - creep.mp3';      // 第一阶段接棒：闷音循环
+const AUDIO_SWELL = 'asset/music/长版creep - creep.mp3'; // 第二阶段进站：最新的长版音乐
 
-let audio1 = null; // 闷音句柄
-let audio2 = null; // 人声句柄
-let audio3 = null; // 进站句柄
+let audio1 = null; 
+let audio2 = null; 
+let audio3 = null; // 专门用来控制长版音乐的句柄
 
+// 播放人声（第一次点击瞬间触发）
 function playVocalSpecial() {
   audio2 = new Audio(AUDIO_VOCAL);
   audio2.play();
 }
 
+// 播放闷音（人声唱完了接棒触发）
 function playChugLoop() {
   if (audio1) return;
   audio1 = new Audio(AUDIO_CHUG);
-  audio1.loop = true; // 开启吉他闷音循环
-  audio1.volume = 0.5; // 基础音量控在 50%
+  audio1.loop = true; 
+  audio1.volume = 0.5; 
   audio1.play();
 }
 
+// 📥 2. 核心逻辑：完全由代码控制的“长版音乐渐弱引擎”
 function playChorusSwell(onFadeStart) {
-  // 瞬间掐断 Phase 1 的人声和闷音，干脆利落
+  // 瞬间掐断前面正在播放的人声和闷音，干脆利落
   if (audio2) { try { audio2.pause(); } catch(e){} }
   if (audio1) { try { audio1.pause(); } catch(e){} }
 
+  // 载入你的长版 Creep
   audio3 = new Audio(AUDIO_SWELL);
-  audio3.volume = 0.8; // 副歌爆破音量
+  audio3.volume = 0.8; // 【初始音量】：一进站瞬间拉高到 80%，完成高潮爆破
   audio3.play();
 
-  // ➔ 点击之后进去主站：第三段 i'm a weirdo 维持 3 秒后开始减弱
+  // ⏳ 【第一步：高潮维持】
+  // 使用 setTimeout 定时器，让这首长版音乐完完整整、大声播放 3000 毫秒（3秒）
   setTimeout(() => {
-    if (onFadeStart) onFadeStart(); // 触发视觉墨迹动画的后半段
+    if (onFadeStart) onFadeStart(); // 触发主页墨迹动画的后半段视觉
     
-    // 每 100 毫秒降低一点音量，在接下来的几秒内丝滑淡出
+    // ⏳ 【第二步：代码接管，开启丝滑渐弱】
+    // 设立一个每 100 毫秒（0.1秒）就执行一次的数字调音台
     let fadeInterval = setInterval(() => {
-      if (audio3.volume > 0.05) {
-        audio3.volume -= 0.02; // 每次减一点，保证减弱过程非常细腻
+      
+      // 如果当前的音量还大于 0.02（还没完全静音）
+      if (audio3.volume > 0.02) {
+        
+        // 【控制行】：每次触发，代码自动把音量往下滑扣除 0.02
+        // 这个数值越小，声音减弱得越慢、越细腻；数值越大，减弱得越快
+        audio3.volume -= 0.02; 
+        
+        // 打印调试日志，你可以在浏览器 F12 看到音量像下楼梯一样下滑
+        console.log("代码正在执行渐弱，当前音量：", audio3.volume.toFixed(2));
+        
       } else {
+        // ⏳ 【第三步：彻底静音，安全关机】
+        // 当音量已经扣到接近 0 了，由代码强制清零并暂停播放，防止后台偷跑流量
         audio3.volume = 0;
         audio3.pause();
-        clearInterval(fadeInterval); // 清除定时器，安全释放
+        
+        clearInterval(fadeInterval); // 销毁这个减弱定时器，释放内存
+        console.log("长版音乐已由代码完美执行渐弱并安全静音。");
       }
-    }, 100); 
-  }, 3000); // 维持 3 秒高潮后开始平滑减弱
+      
+    }, 100); // ← 每 100 毫秒（0.1秒）执行一次下滑扣分贝
+    
+  }, 3000); // ← 3000 毫秒（3秒）代表歌声轰鸣 3 秒后才开始衰减，你可以自由调整这个等待时间
 }
 
-// 保持一个空函数防止其他地方报错调用
+// 保持空函数防止老代码其他角落报错
 function initAudio() {}
 function stopChug() {}
 
