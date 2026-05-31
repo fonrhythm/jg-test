@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>JossGawin — Enter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Outfit:wght@100;200;300&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+  :root {
+    /* Night — Joss 🐻 */
+    --night-bg-0: #111115;
+    --night-bg-1: #1C1B24;
+    --night-bg-2: #28263A;
+    --night-purple-core: #4A3F72;
+    --night-purple-mid: #7A6EA8;
+    --night-purple-fog: #B8B0D4;
+    --night-white: #E2DFEF;
+    --night-line: rgba(226,223,239,0.15);
+    --night-glass-bg: rgba(74,63,114,0.18);
+    --night-glass-border: rgba(184,176,212,0.18);
+
+    /* Day — Gawin 🐧 */
+    --day-bg-0: #F7F9F7;
+    --day-bg-1: #EDF3EE;
+    --day-bg-2: #E4EFE6;
+    --day-green-core: #7BB08A;
+    --day-green-deep: #4D8A62;
+    --day-green-fog: #B8D9C2;
+    --day-crimson: #8B2635;
+    --day-black: #1A1C1A;
+    --day-line: rgba(26,28,26,0.12);
+    --day-glass-bg: rgba(123,176,138,0.14);
+    --day-glass-border: rgba(77,138,98,0.22);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+
+  #splash {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    cursor: pointer;
+    transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  /* ── NIGHT MODE ── */
+  .night #splash {
+    background: radial-gradient(ellipse at 30% 40%, #28263A 0%, #1C1B24 45%, #111115 100%);
+  }
+
+  /* ── DAY MODE ── */
+  .day #splash {
+    background: radial-gradient(ellipse at 70% 60%, #E4EFE6 0%, #EDF3EE 45%, #F7F9F7 100%);
+  }
+
+  /* ── NOISE GRAIN overlay ── */
+  #splash::before {
+    content: '';
+    position: absolute; inset: 0;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+    background-size: 180px;
+    pointer-events: none;
+  }
+
+  /* ── AMBIENT GLOW ── */
+  .glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(90px);
+    opacity: 0;
+    transition: opacity 1.8s ease;
+    pointer-events: none;
+  }
+  .night .glow-1 {
+    width: 500px; height: 500px;
+    top: -100px; left: -80px;
+    background: radial-gradient(circle, rgba(74,63,114,0.4) 0%, transparent 70%);
+  }
+  .night .glow-2 {
+    width: 400px; height: 400px;
+    bottom: -80px; right: -60px;
+    background: radial-gradient(circle, rgba(122,110,168,0.25) 0%, transparent 70%);
+  }
+  .day .glow-1 {
+    width: 500px; height: 500px;
+    top: -80px; right: -100px;
+    background: radial-gradient(circle, rgba(123,176,138,0.35) 0%, transparent 70%);
+  }
+  .day .glow-2 {
+    width: 350px; height: 350px;
+    bottom: -60px; left: -80px;
+    background: radial-gradient(circle, rgba(139,38,53,0.12) 0%, transparent 70%);
+  }
+  .phase-1 .glow { opacity: 1; }
+
+  /* ── CENTER CONTENT ── */
+  .center-wrap {
+    position: relative;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 0;
+    z-index: 10;
+  }
+
+  /* tagline */
+  .tagline {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 10px;
+    opacity: 0;
+    transition: opacity 1.4s ease;
+  }
+  .phase-0 .tagline { opacity: 0.18; }
+  .phase-1 .tagline { opacity: 1; }
+  .phase-2 .tagline { opacity: 0; }
+
+  .tagline-en {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 300;
+    font-size: clamp(18px, 3.5vw, 28px);
+    letter-spacing: 0.06em;
+  }
+  .tagline-zh {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 100;
+    font-size: clamp(13px, 2vw, 17px);
+    letter-spacing: 0.22em;
+  }
+  .tagline-th {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 100;
+    font-size: clamp(12px, 1.8vw, 15px);
+    letter-spacing: 0.1em;
+    opacity: 0.7;
+  }
+  .night .tagline-en { color: var(--night-white); }
+  .night .tagline-zh { color: var(--night-purple-fog); }
+  .night .tagline-th { color: var(--night-purple-mid); }
+  .day .tagline-en { color: var(--day-black); }
+  .day .tagline-zh { color: var(--day-green-deep); }
+  .day .tagline-th { color: var(--day-green-core); }
+
+  /* divider line */
+  .tag-line-div {
+    width: 1px; height: 0px;
+    margin: 18px 0;
+    transition: height 1.2s cubic-bezier(0.4,0,0.2,1);
+  }
+  .night .tag-line-div { background: var(--night-line); }
+  .day .tag-line-div { background: var(--day-line); }
+  .phase-1 .tag-line-div { height: 48px; }
+
+  /* CP name */
+  .cp-name {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 100;
+    font-size: clamp(10px, 1.4vw, 13px);
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 1.2s ease 0.3s;
+  }
+  .night .cp-name { color: var(--night-purple-fog); }
+  .day .cp-name { color: var(--day-green-core); }
+  .phase-1 .cp-name, .phase-2 .cp-name { opacity: 1; }
+
+  /* GLASS HALO around tagline */
+  .glass-halo {
+    position: absolute;
+    width: 420px; height: 220px;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 1.6s ease;
+    pointer-events: none;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+  }
+  .night .glass-halo {
+    background: radial-gradient(ellipse, rgba(74,63,114,0.22) 0%, transparent 70%);
+    box-shadow: 0 0 80px rgba(122,110,168,0.15);
+  }
+  .day .glass-halo {
+    background: radial-gradient(ellipse, rgba(123,176,138,0.18) 0%, transparent 70%);
+    box-shadow: 0 0 80px rgba(77,138,98,0.1);
+  }
+  .phase-1 .glass-halo { opacity: 1; }
+
+  /* ENTER — fullscreen hotzone, button is purely visual hint */
+  .enter-wrap {
+    margin-top: 56px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 1.4s ease, transform 1.4s ease;
+    pointer-events: none;
+  }
+  .enter-wrap.ready {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .phase-2 .enter-wrap { opacity: 0 !important; }
+
+  .enter-btn {
+    background: none;
+    border: none;
+    cursor: default;
+    padding: 0;
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(28px, 4.5vw, 48px);
+    pointer-events: none;
+    animation: welcomeBreathe 3.5s ease-in-out infinite;
+  }
+  .night .enter-btn { color: var(--night-purple-fog); }
+  .day .enter-btn { color: var(--day-green-deep); }
+
+  @keyframes welcomeBreathe {
+    0%, 100% { opacity: 0.55; }
+    50% { opacity: 1; }
+  }
+
+  /* CLICK HINT */
+  .click-hint {
+    position: absolute;
+    bottom: 48px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 100;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: breathe 2.8s ease-in-out infinite;
+    transition: opacity 1s ease;
+  }
+  .phase-0 .click-hint { opacity: 1; }
+  .night .click-hint { color: rgba(226,223,239,0.3); }
+  .day .click-hint { color: rgba(26,28,26,0.25); }
+
+  @keyframes breathe {
+    0%, 100% { opacity: 0.3; }
+    50% { opacity: 0.7; }
+  }
+
+  /* AUDIO STATUS — mobile */
+  .audio-hint {
+    position: absolute;
+    bottom: 80px;
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 100;
+    font-size: 10px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+  }
+  .audio-hint.visible { opacity: 1; }
+  .night .audio-hint { color: var(--night-purple-fog); }
+  .day .audio-hint { color: var(--day-green-core); }
+  .audio-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    animation: pulse-dot 1.4s ease-in-out infinite;
+  }
+  .night .audio-dot { background: var(--night-purple-mid); }
+  .day .audio-dot { background: var(--day-green-core); }
+  @keyframes pulse-dot {
+    0%, 100% { transform: scale(1); opacity: 0.6; }
+    50% { transform: scale(1.5); opacity: 1; }
+  }
+
+  /* THEME BADGE top-right */
+  .theme-badge {
+    position: absolute;
+    top: 28px; right: 32px;
+    font-family: 'Outfit', sans-serif;
+    font-weight: 100;
+    font-size: 10px;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    opacity: 0.35;
+  }
+  .night .theme-badge { color: var(--night-purple-fog); }
+  .day .theme-badge { color: var(--day-green-deep); }
+
+  /* INK TRANSITION OVERLAY */
+  #ink-overlay {
+    position: fixed; inset: 0;
+    z-index: 100;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.1s;
+  }
+  .night #ink-overlay { background: #111115; }
+  .day #ink-overlay { background: #F7F9F7; }
+  #ink-overlay.fade-out {
+    animation: inkFade 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+  @keyframes inkFade {
+    0% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+  /* MAIN CONTENT (placeholder) */
+  #main {
+    position: fixed; inset: 0;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transition: opacity 1.4s ease 0.6s;
+    pointer-events: none;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 18px;
+    letter-spacing: 0.1em;
+  }
+  #main.visible { opacity: 1; pointer-events: auto; }
+  .night #main { background: var(--night-bg-0); color: var(--night-white); }
+  .day #main { background: var(--day-bg-0); color: var(--day-black); }
+
+  /* MOBILE specific */
+  @media (max-width: 640px) {
+    .enter-btn { padding: 16px 28px; }
+    .tagline-en { font-size: 22px; }
+    .glass-halo { width: 300px; height: 160px; }
+  }
+</style>
+</head>
+<body>
+
+<div id="ink-overlay"></div>
+
+<div id="splash">
+  <div class="glow glow-1"></div>
+  <div class="glow glow-2"></div>
+
+  <div class="theme-badge" id="themeBadge"></div>
+
+  <div class="center-wrap">
+    <div class="glass-halo"></div>
+
+    <div class="tagline" id="tagline">
+      <span class="tagline-en">You're special.</span>
+      <span class="tagline-zh">你是最特别的。</span>
+      <span class="tagline-th">คุณคือคนพิเศษที่สุด</span>
+    </div>
+
+    <div class="tag-line-div"></div>
+    <div class="cp-name">JossGawin</div>
+
+    <div class="enter-wrap" id="enterWrap">
+      <div class="enter-btn">Welcome Home</div>
+    </div>
+  </div>
+
+  <div class="click-hint" id="clickHint">touch anywhere</div>
+  <div class="audio-hint" id="audioHint">
+    <span class="audio-dot"></span>
+    <span id="audioHintText">playing</span>
+  </div>
+</div>
+
+<div id="main">
+  — 主页内容即将呈现 —
+</div>
+
+<script>
+  // ── THEME DETECTION ──
+  const hour = new Date().getHours();
+  const isNight = hour >= 18 || hour < 6;
+  const body = document.body;
+  body.classList.add(isNight ? 'night' : 'day');
+  document.getElementById('themeBadge').textContent = isNight ? 'Joss 🐻 Night' : 'Gawin 🐧 Day';
+
+  // ── STATE ──
+  let phase = 0;
+  let audioCtx = null;
+  let chugSource = null;
+  let chorusSource = null;
+  let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
+  const splash = document.getElementById('splash');
+  const inkOverlay = document.getElementById('ink-overlay');
+  const mainPage = document.getElementById('main');
+  const audioHint = document.getElementById('audioHint');
+  const audioHintText = document.getElementById('audioHintText');
+
+  // ── AUDIO ENGINE ──
+  // Synthesized "Creep" chug approximation using Web Audio API
+  // (In production: replace buffers with actual audio file URLs)
+
+  function initAudio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+
+  // Synthesize a guitar chug/muted chord loop
+  function playChugLoop() {
+    if (!audioCtx) return;
+    stopChug();
+
+    const masterGain = audioCtx.createGain();
+    masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+    masterGain.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 0.3);
+    masterGain.connect(audioCtx.destination);
+
+    // Reverb convolver for atmosphere
+    const convolver = audioCtx.createConvolver();
+    const reverbGain = audioCtx.createGain();
+    reverbGain.gain.value = 0.3;
+
+    // Simple impulse response for reverb
+    const reverbLen = audioCtx.sampleRate * 1.5;
+    const impulse = audioCtx.createBuffer(2, reverbLen, audioCtx.sampleRate);
+    for (let c = 0; c < 2; c++) {
+      const ch = impulse.getChannelData(c);
+      for (let i = 0; i < reverbLen; i++) {
+        ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / reverbLen, 2.5);
+      }
+    }
+    convolver.buffer = impulse;
+    convolver.connect(reverbGain);
+    reverbGain.connect(masterGain);
+
+    // Chug pattern: G - B - C - Cm (Creep chord progression approximation)
+    const chords = [
+      [196.00, 246.94, 293.66, 392.00], // G
+      [246.94, 311.13, 369.99, 493.88], // B
+      [261.63, 329.63, 392.00, 523.25], // C
+      [261.63, 311.13, 392.00, 523.25], // Cm
+    ];
+
+    let chugPlaying = true;
+    chugSource = { stop: () => { chugPlaying = false; masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4); } };
+
+    function playBeat(chordIndex, time) {
+      if (!chugPlaying) return;
+      const freqs = chords[chordIndex % 4];
+
+      freqs.forEach((freq, i) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        const filter = audioCtx.createBiquadFilter();
+
+        filter.type = 'lowpass';
+        filter.frequency.value = 900 + Math.random() * 400;
+        filter.Q.value = 3;
+
+        osc.type = i === 0 ? 'sawtooth' : 'square';
+        osc.frequency.value = freq * (i === 0 ? 0.5 : 1) * (1 + (Math.random() - 0.5) * 0.004);
+
+        gain.gain.setValueAtTime(0, time);
+        gain.gain.linearRampToValueAtTime(0.06 / freqs.length, time + 0.005);
+        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.18);
+
+        osc.connect(filter);
+        filter.connect(gain);
+        gain.connect(masterGain);
+        gain.connect(convolver);
+
+        osc.start(time);
+        osc.stop(time + 0.22);
+      });
+    }
+
+    // Rhythm: 4 beats per chord, ~108 BPM
+    const bpm = 108;
+    const beat = 60 / bpm;
+    let beatCount = 0;
+    let chordIdx = 0;
+
+    function scheduleBeat() {
+      if (!chugPlaying) return;
+      const t = audioCtx.currentTime + 0.05;
+
+      // Pattern per chord: beat on 1 and 3, muted on 2 and 4
+      for (let b = 0; b < 4; b++) {
+        if (b === 0 || b === 2) {
+          playBeat(chordIdx, t + b * beat);
+        }
+      }
+
+      chordIdx = (chordIdx + 1) % 4;
+      setTimeout(scheduleBeat, beat * 4 * 1000 * 0.98);
+    }
+    scheduleBeat();
+  }
+
+  // Synthesized "chorus" swell — emotional pad approximation
+  function playChorusSwell(onFadeStart) {
+    if (!audioCtx) return;
+    stopChug();
+
+    const masterGain = audioCtx.createGain();
+    masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+    masterGain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.8);
+    masterGain.connect(audioCtx.destination);
+
+    // Emotional chord swell (G major → emotional resolution)
+    const chorusFreqs = [196.00, 246.94, 293.66, 369.99, 493.88];
+    const oscs = [];
+
+    chorusFreqs.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+
+      filter.type = 'lowpass';
+      filter.frequency.value = 1200;
+
+      osc.type = i < 2 ? 'sine' : 'triangle';
+      osc.frequency.value = freq * (1 + (Math.random()-0.5)*0.003);
+      osc.detune.value = (i % 2 === 0 ? -3 : 3);
+
+      gain.gain.setValueAtTime(0, audioCtx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.09, audioCtx.currentTime + 1.2 + i * 0.15);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(masterGain);
+      osc.start();
+      oscs.push({ osc, gain });
+    });
+
+    // Fade to murmur after 3s
+    setTimeout(() => {
+      if (onFadeStart) onFadeStart();
+      masterGain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 3);
+      masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 7);
+      setTimeout(() => oscs.forEach(o => { try { o.osc.stop(); } catch(e){} }), 8000);
+    }, 3000);
+
+    chorusSource = masterGain;
+  }
+
+  function stopChug() {
+    if (chugSource) { try { chugSource.stop(); } catch(e){} chugSource = null; }
+  }
+
+  // ── PHASE 0 → 1: first touch ──
+  function handleFirstTouch(e) {
+    if (phase !== 0) return;
+    phase = 1;
+
+    splash.removeEventListener('click', handleFirstTouch);
+    splash.removeEventListener('touchstart', handleFirstTouch);
+
+    initAudio();
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().then(() => { playChugLoop(); showAudioHint('\u266a playing'); });
+    } else {
+      playChugLoop();
+      showAudioHint('\u266a playing');
+    }
+
+    splash.classList.remove('phase-0');
+    splash.classList.add('phase-1');
+    document.getElementById('clickHint').style.opacity = '0';
+
+    // Enter visual hint appears after 2.5s — user hears the lyric first
+    setTimeout(() => {
+      document.getElementById('enterWrap').classList.add('ready');
+      // Now bind fullscreen click for phase 2
+      splash.addEventListener('click', handleEnter);
+      splash.addEventListener('touchstart', handleEnter, { passive: true });
+    }, 2500);
+  }
+
+  function showAudioHint(msg) {
+    audioHintText.textContent = msg;
+    audioHint.classList.add('visible');
+    setTimeout(() => audioHint.classList.remove('visible'), 2200);
+  }
+
+  // ── PHASE 1 → 2: fullscreen second touch ──
+  function handleEnter(e) {
+    if (phase !== 1) return;
+    phase = 2;
+
+    // audio: stop chug → chorus swell
+    playChorusSwell(() => {
+      // murmur fade = "but I'm a creep"
+    });
+    showAudioHint('♪ entering');
+
+    // visual: fade out splash, fade in main
+    splash.classList.add('phase-2');
+
+    setTimeout(() => {
+      // ink fade overlay
+      inkOverlay.style.opacity = '1';
+      inkOverlay.classList.add('fade-out');
+
+      setTimeout(() => {
+        splash.style.opacity = '0';
+        mainPage.classList.add('visible');
+        // In production: trigger BGM fade-in here
+      }, 400);
+    }, 600);
+  }
+
+  // ── INIT ──
+  splash.classList.add('phase-0');
+
+  // Bind first-touch
+  splash.addEventListener('click', handleFirstTouch);
+  splash.addEventListener('touchstart', handleFirstTouch, { passive: true });
+
+  // Mobile: iOS audio needs explicit gesture, show hint
+  if (isIOS) {
+    const iosHint = document.createElement('div');
+    iosHint.style.cssText = `
+      position:absolute; bottom:120px; left:50%; transform:translateX(-50%);
+      font-family:'Outfit',sans-serif; font-weight:100; font-size:9px;
+      letter-spacing:0.3em; text-transform:uppercase; text-align:center;
+      opacity:0.35; white-space:nowrap;
+      color:${isNight ? 'var(--night-purple-fog)' : 'var(--day-green-core)'};
+    `;
+    iosHint.textContent = 'tap to enable audio';
+    splash.appendChild(iosHint);
+  }
+</script>
+</body>
+</html>
