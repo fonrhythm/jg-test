@@ -389,186 +389,87 @@
   const audioHint = document.getElementById('audioHint');
   const audioHintText = document.getElementById('audioHintText');
 
-  // ── AUDIO ENGINE ──
-  // Synthesized "Creep" chug approximation using Web Audio API
-  // (In production: replace buffers with actual audio file URLs)
+  // ── AUDIO ENGINE (真实音频驱动) ──
 
-  function initAudio() {
-    if (audioCtx) return;
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
+const AUDIO_VOCAL = 'asset/music/speical - creep.mp3'; // 1. 人声清唱
+const AUDIO_CHUG  = 'asset/music/闷音 - creep.mp3';   // 2. 闷音循环
+const AUDIO_SWELL = 'asset/music/creep - creep.mp3';  // 3. 进入主站的 weirdo 减弱
 
-  // Synthesize a guitar chug/muted chord loop
-  function playChugLoop() {
-    if (!audioCtx) return;
-    stopChug();
+let audio1 = null; // 闷音句柄
+let audio2 = null; // 人声句柄
+let audio3 = null; // 进站句柄
 
-    const masterGain = audioCtx.createGain();
-    masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
-    masterGain.gain.linearRampToValueAtTime(0.35, audioCtx.currentTime + 0.3);
-    masterGain.connect(audioCtx.destination);
+function playVocalSpecial() {
+  audio2 = new Audio(AUDIO_VOCAL);
+  audio2.play();
+}
 
-    // Reverb convolver for atmosphere
-    const convolver = audioCtx.createConvolver();
-    const reverbGain = audioCtx.createGain();
-    reverbGain.gain.value = 0.3;
+function playChugLoop() {
+  if (audio1) return;
+  audio1 = new Audio(AUDIO_CHUG);
+  audio1.loop = true; // 开启吉他闷音循环
+  audio1.volume = 0.5; // 基础音量控在 50%
+  audio1.play();
+}
 
-    // Simple impulse response for reverb
-    const reverbLen = audioCtx.sampleRate * 1.5;
-    const impulse = audioCtx.createBuffer(2, reverbLen, audioCtx.sampleRate);
-    for (let c = 0; c < 2; c++) {
-      const ch = impulse.getChannelData(c);
-      for (let i = 0; i < reverbLen; i++) {
-        ch[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / reverbLen, 2.5);
+function playChorusSwell(onFadeStart) {
+  // 瞬间掐断 Phase 1 的人声和闷音，干脆利落
+  if (audio2) { try { audio2.pause(); } catch(e){} }
+  if (audio1) { try { audio1.pause(); } catch(e){} }
+
+  audio3 = new Audio(AUDIO_SWELL);
+  audio3.volume = 0.8; // 副歌爆破音量
+  audio3.play();
+
+  // ➔ 点击之后进去主站：第三段 i'm a weirdo 维持 3 秒后开始减弱
+  setTimeout(() => {
+    if (onFadeStart) onFadeStart(); // 触发视觉墨迹动画的后半段
+    
+    // 每 100 毫秒降低一点音量，在接下来的几秒内丝滑淡出
+    let fadeInterval = setInterval(() => {
+      if (audio3.volume > 0.05) {
+        audio3.volume -= 0.02; // 每次减一点，保证减弱过程非常细腻
+      } else {
+        audio3.volume = 0;
+        audio3.pause();
+        clearInterval(fadeInterval); // 清除定时器，安全释放
       }
-    }
-    convolver.buffer = impulse;
-    convolver.connect(reverbGain);
-    reverbGain.connect(masterGain);
+    }, 100); 
+  }, 3000); // 维持 3 秒高潮后开始平滑减弱
+}
 
-    // Chug pattern: G - B - C - Cm (Creep chord progression approximation)
-    const chords = [
-      [196.00, 246.94, 293.66, 392.00], // G
-      [246.94, 311.13, 369.99, 493.88], // B
-      [261.63, 329.63, 392.00, 523.25], // C
-      [261.63, 311.13, 392.00, 523.25], // Cm
-    ];
-
-    let chugPlaying = true;
-    chugSource = { stop: () => { chugPlaying = false; masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 0.4); } };
-
-    function playBeat(chordIndex, time) {
-      if (!chugPlaying) return;
-      const freqs = chords[chordIndex % 4];
-
-      freqs.forEach((freq, i) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        const filter = audioCtx.createBiquadFilter();
-
-        filter.type = 'lowpass';
-        filter.frequency.value = 900 + Math.random() * 400;
-        filter.Q.value = 3;
-
-        osc.type = i === 0 ? 'sawtooth' : 'square';
-        osc.frequency.value = freq * (i === 0 ? 0.5 : 1) * (1 + (Math.random() - 0.5) * 0.004);
-
-        gain.gain.setValueAtTime(0, time);
-        gain.gain.linearRampToValueAtTime(0.06 / freqs.length, time + 0.005);
-        gain.gain.exponentialRampToValueAtTime(0.001, time + 0.18);
-
-        osc.connect(filter);
-        filter.connect(gain);
-        gain.connect(masterGain);
-        gain.connect(convolver);
-
-        osc.start(time);
-        osc.stop(time + 0.22);
-      });
-    }
-
-    // Rhythm: 4 beats per chord, ~108 BPM
-    const bpm = 108;
-    const beat = 60 / bpm;
-    let beatCount = 0;
-    let chordIdx = 0;
-
-    function scheduleBeat() {
-      if (!chugPlaying) return;
-      const t = audioCtx.currentTime + 0.05;
-
-      // Pattern per chord: beat on 1 and 3, muted on 2 and 4
-      for (let b = 0; b < 4; b++) {
-        if (b === 0 || b === 2) {
-          playBeat(chordIdx, t + b * beat);
-        }
-      }
-
-      chordIdx = (chordIdx + 1) % 4;
-      setTimeout(scheduleBeat, beat * 4 * 1000 * 0.98);
-    }
-    scheduleBeat();
-  }
-
-  // Synthesized "chorus" swell — emotional pad approximation
-  function playChorusSwell(onFadeStart) {
-    if (!audioCtx) return;
-    stopChug();
-
-    const masterGain = audioCtx.createGain();
-    masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
-    masterGain.gain.linearRampToValueAtTime(0.5, audioCtx.currentTime + 0.8);
-    masterGain.connect(audioCtx.destination);
-
-    // Emotional chord swell (G major → emotional resolution)
-    const chorusFreqs = [196.00, 246.94, 293.66, 369.99, 493.88];
-    const oscs = [];
-
-    chorusFreqs.forEach((freq, i) => {
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      const filter = audioCtx.createBiquadFilter();
-
-      filter.type = 'lowpass';
-      filter.frequency.value = 1200;
-
-      osc.type = i < 2 ? 'sine' : 'triangle';
-      osc.frequency.value = freq * (1 + (Math.random()-0.5)*0.003);
-      osc.detune.value = (i % 2 === 0 ? -3 : 3);
-
-      gain.gain.setValueAtTime(0, audioCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.09, audioCtx.currentTime + 1.2 + i * 0.15);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(masterGain);
-      osc.start();
-      oscs.push({ osc, gain });
-    });
-
-    // Fade to murmur after 3s
-    setTimeout(() => {
-      if (onFadeStart) onFadeStart();
-      masterGain.gain.linearRampToValueAtTime(0.08, audioCtx.currentTime + 3);
-      masterGain.gain.linearRampToValueAtTime(0, audioCtx.currentTime + 7);
-      setTimeout(() => oscs.forEach(o => { try { o.osc.stop(); } catch(e){} }), 8000);
-    }, 3000);
-
-    chorusSource = masterGain;
-  }
-
-  function stopChug() {
-    if (chugSource) { try { chugSource.stop(); } catch(e){} chugSource = null; }
-  }
+// 保持一个空函数防止其他地方报错调用
+function initAudio() {}
+function stopChug() {}
 
   // ── PHASE 0 → 1: first touch ──
-  function handleFirstTouch(e) {
-    if (phase !== 0) return;
-    phase = 1;
+function handleFirstTouch(e) {
+  if (phase !== 0) return;
+  phase = 1;
 
-    splash.removeEventListener('click', handleFirstTouch);
-    splash.removeEventListener('touchstart', handleFirstTouch);
+  splash.removeEventListener('click', handleFirstTouch);
+  splash.removeEventListener('touchstart', handleFirstTouch);
 
-    initAudio();
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume().then(() => { playChugLoop(); showAudioHint('\u266a playing'); });
-    } else {
-      playChugLoop();
-      showAudioHint('\u266a playing');
-    }
+  // ➔ 第一次点击：立刻响起纯人声清唱
+  playVocalSpecial();
+  showAudioHint('\u266a playing');
 
-    splash.classList.remove('phase-0');
-    splash.classList.add('phase-1');
-    document.getElementById('clickHint').style.opacity = '0';
+  splash.classList.remove('phase-0');
+  splash.classList.add('phase-1');
+  document.getElementById('clickHint').style.opacity = '0';
 
-    // Enter visual hint appears after 2.5s — user hears the lyric first
-    setTimeout(() => {
-      document.getElementById('enterWrap').classList.add('ready');
-      // Now bind fullscreen click for phase 2
-      splash.addEventListener('click', handleEnter);
-      splash.addEventListener('touchstart', handleEnter, { passive: true });
-    }, 2500);
-  }
+  // ➔ 核心卡点：人声唱完了，才会出现闷音
+  // ⚠️ 请把下面的 3500 (3.5秒) 改成你那段 "speical - creep.mp3" 唱完的精准时长
+  setTimeout(() => {
+    document.getElementById('enterWrap').classList.add('ready');
+    
+    playChugLoop(); // 闷音吉他现在正式接棒，开始背景暗涌循环
+
+    // 允许第二次点击，触发进入主站
+    splash.addEventListener('click', handleEnter);
+    splash.addEventListener('touchstart', handleEnter, { passive: true });
+  }, 3500); 
+}
 
   function showAudioHint(msg) {
     audioHintText.textContent = msg;
