@@ -519,9 +519,7 @@ function handleFirstTouch(e) {
       inkOverlay.classList.add('fade-out');
 
       setTimeout(() => {
-        splash.style.opacity = '0';
-        mainPage.classList.add('visible');
-        // In production: trigger BGM fade-in here
+        window.location.href = './pages/';
       }, 400);
     }, 600);
   }
