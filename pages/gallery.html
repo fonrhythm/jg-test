@@ -3,10 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JossGawin</title>
+<title>Gallery — JossGawin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Outfit:wght@100;200;300;400&family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
+/* ── TOKENS (mirrored from index) ── */
 :root{
   --night-bg-0:#111115;--night-bg-1:#1C1B24;--night-bg-2:#28263A;
   --night-purple-core:#4A3F72;--night-purple-mid:#7A6EA8;
@@ -22,10 +23,9 @@
 html{scroll-behavior:smooth;}
 body{
   font-family:'Outfit',sans-serif;overflow-x:hidden;
-  -webkit-tap-highlight-color:transparent;user-select:none;
+  -webkit-tap-highlight-color:transparent;
   transition:background 0.8s var(--ease),color 0.8s var(--ease);
-  /* page fades in on load */
-  opacity:0;animation:pageIn 0.9s ease 0.1s forwards;
+  opacity:0;animation:pageIn 0.8s ease 0.05s forwards;
 }
 @keyframes pageIn{to{opacity:1;}}
 body.night{background:var(--night-bg-0);color:var(--night-white);}
@@ -34,33 +34,24 @@ body.day  {background:var(--day-bg-0);color:var(--day-black);}
 /* ── NAV ── */
 #nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
-  display:grid;
-  grid-template-columns:auto 1fr auto;
-  align-items:center;
-  padding:0 40px;height:60px;
+  display:grid;grid-template-columns:auto 1fr auto;
+  align-items:center;padding:0 40px;height:60px;
   transition:backdrop-filter 0.4s,background 0.4s;
 }
 #nav.scrolled{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
 body.night #nav.scrolled{background:rgba(17,17,21,0.78);border-bottom:0.5px solid var(--night-line);}
 body.day   #nav.scrolled{background:rgba(247,249,247,0.78);border-bottom:0.5px solid var(--day-line);}
 
-/* LEFT */
 .nav-logo{
-  grid-column:1;
-  font-family:'Great Vibes',cursive;font-size:22px;
-  letter-spacing:0.04em;flex-shrink:0;
-  opacity:0;animation:fadeUp 0.8s ease 0.2s forwards;
+  grid-column:1;font-family:'Great Vibes',cursive;font-size:22px;
+  letter-spacing:0.04em;text-decoration:none;
 }
 body.night .nav-logo{color:var(--night-purple-fog);}
 body.day   .nav-logo{color:var(--day-green-deep);}
 
-/* CENTER — fills middle cell, self-centers */
 .nav-links{
-  grid-column:2;
-  display:flex;gap:24px;list-style:none;
-  justify-content:center;align-items:center;
-  overflow:hidden;
-  opacity:0;animation:fadeUp 0.8s ease 0.3s forwards;
+  grid-column:2;display:flex;gap:24px;list-style:none;
+  justify-content:center;align-items:center;overflow:hidden;
 }
 .nav-links a{
   font-weight:200;font-size:10px;letter-spacing:0.28em;
@@ -68,477 +59,257 @@ body.day   .nav-logo{color:var(--day-green-deep);}
   opacity:0.7;transition:opacity 0.25s;white-space:nowrap;
 }
 .nav-links a:hover{opacity:1;}
+.nav-links a.active{opacity:1;}
 body.night .nav-links a{color:var(--night-white);}
 body.day   .nav-links a{color:var(--day-black);}
 
-/* RIGHT */
 .nav-right{
-  grid-column:3;
-  display:flex;align-items:flex-end;flex-direction:column;
-  gap:5px;flex-shrink:0;
-  opacity:0;animation:fadeUp 0.8s ease 0.35s forwards;
+  grid-column:3;display:flex;align-items:flex-end;
+  flex-direction:column;gap:5px;flex-shrink:0;
 }
-
-/* wide right: lang top, toggle below */
-.nav-right-wide{
-  display:flex;flex-direction:column;align-items:flex-end;gap:5px;
-}
+.nav-right-wide{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
 .lang-switch{display:flex;align-items:center;gap:12px;}
 .lang-btn{
   background:none;border:none;cursor:pointer;
   font-family:'Outfit',sans-serif;font-weight:200;font-size:10px;
-  letter-spacing:0.25em;opacity:0.45;transition:opacity 0.25s;
-  padding:0;line-height:1;
+  letter-spacing:0.25em;opacity:0.45;transition:opacity 0.25s;padding:0;line-height:1;
 }
 .lang-btn.active{opacity:1;}
 .lang-btn:hover{opacity:0.8;}
 body.night .lang-btn{color:var(--night-white);}
 body.day   .lang-btn{color:var(--day-black);}
-
-/* theme toggle */
 .theme-toggle{
   background:none;border:none;cursor:pointer;
   width:34px;height:20px;position:relative;flex-shrink:0;
 }
-.toggle-track{
-  position:absolute;inset:3px 0;border-radius:10px;transition:background 0.5s;
-}
+.toggle-track{position:absolute;inset:3px 0;border-radius:10px;transition:background 0.5s;}
 body.night .toggle-track{background:rgba(184,176,212,0.25);border:0.5px solid rgba(184,176,212,0.3);}
 body.day   .toggle-track{background:rgba(77,138,98,0.2);border:0.5px solid rgba(77,138,98,0.3);}
-.toggle-dot{
-  position:absolute;top:1px;width:12px;height:12px;border-radius:50%;
-  transition:left 0.4s var(--ease),background 0.4s;
-}
+.toggle-dot{position:absolute;top:1px;width:12px;height:12px;border-radius:50%;transition:left 0.4s var(--ease),background 0.4s;}
 body.night .toggle-dot{left:2px;background:var(--night-purple-fog);}
 body.day   .toggle-dot{left:20px;background:var(--day-green-core);}
 
-/* narrow right: [toggle + ham] on top, lang below */
-.nav-ham-group{
-  display:none;
-  flex-direction:column;align-items:flex-end;gap:5px;
-}
+.nav-ham-group{display:none;flex-direction:column;align-items:flex-end;gap:5px;}
 .nav-ham-top{display:flex;align-items:center;gap:10px;}
-.nav-hamburger{
-  background:none;border:none;cursor:pointer;
-  display:flex;flex-direction:column;gap:5px;padding:4px;
-  opacity:0.7;transition:opacity 0.25s;
-}
-.nav-hamburger:hover{opacity:1;}
-.ham-line{
-  width:22px;height:0.5px;display:block;
-  transition:transform 0.35s var(--ease),opacity 0.35s,width 0.35s;
-}
+.nav-hamburger{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:4px;opacity:0.7;transition:opacity 0.25s;}
+.ham-line{width:22px;height:0.5px;display:block;transition:transform 0.35s var(--ease),opacity 0.35s,width 0.35s;}
 body.night .ham-line{background:var(--night-white);}
 body.day   .ham-line{background:var(--day-black);}
 .nav-hamburger.open .ham-line:nth-child(1){transform:translateY(5.5px) rotate(45deg);}
 .nav-hamburger.open .ham-line:nth-child(2){opacity:0;width:0;}
 .nav-hamburger.open .ham-line:nth-child(3){transform:translateY(-5.5px) rotate(-45deg);}
 .nav-lang-mobile{display:flex;align-items:center;gap:12px;}
-
-/* full-screen dropdown */
 .nav-dropdown{
   position:fixed;inset:0;z-index:98;
-  display:flex;flex-direction:column;
-  align-items:flex-end;justify-content:center;
-  padding-right:40px;gap:22px;
-  opacity:0;pointer-events:none;
-  transition:opacity 0.35s var(--ease);
+  display:flex;flex-direction:column;align-items:flex-end;
+  justify-content:center;padding-right:40px;gap:22px;
+  opacity:0;pointer-events:none;transition:opacity 0.35s var(--ease);
 }
-.nav-dropdown::before{
-  content:'';position:absolute;inset:0;z-index:-1;
-  backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);
-}
+.nav-dropdown::before{content:'';position:absolute;inset:0;z-index:-1;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);}
 body.night .nav-dropdown::before{background:rgba(17,17,21,0.9);}
 body.day   .nav-dropdown::before{background:rgba(247,249,247,0.93);}
 .nav-dropdown.open{opacity:1;pointer-events:auto;}
-.nav-dropdown a{
-  font-weight:200;font-size:14px;letter-spacing:0.3em;
-  text-transform:uppercase;text-decoration:none;
-  opacity:0.75;transition:opacity 0.22s;white-space:nowrap;
-}
+.nav-dropdown a{font-weight:200;font-size:14px;letter-spacing:0.3em;text-transform:uppercase;text-decoration:none;opacity:0.75;transition:opacity 0.22s;white-space:nowrap;}
 .nav-dropdown a:hover{opacity:1;}
 body.night .nav-dropdown a{color:var(--night-white);}
 body.day   .nav-dropdown a{color:var(--day-black);}
 
-/* breakpoint: hide links and switch to narrow group before collision
-   logo ~130px + right-group ~100px + 8 links×52px + gaps ≈ 870px */
 @media(max-width:870px){
-  #nav{ grid-template-columns:auto 1fr; padding:0 20px; }
-  .nav-links{ display:none; }
-  .nav-right-wide{ display:none; }
-  .nav-ham-group{ display:flex; }
-  .nav-dropdown{ padding-right:24px; }
+  #nav{grid-template-columns:auto 1fr;padding:0 20px;}
+  .nav-links{display:none;}
+  .nav-right-wide{display:none;}
+  .nav-ham-group{display:flex;}
 }
 @media(min-width:871px){
-  .nav-ham-group{ display:none !important; }
-  .nav-right-wide{ display:flex; }
+  .nav-ham-group{display:none !important;}
+  .nav-right-wide{display:flex;}
 }
 
-@keyframes fadeUp{to{opacity:1;transform:translateY(0);}}
-
-/* ── HERO ── */
-#hero{
-  position:relative;width:100vw;height:100vh;overflow:hidden;
+/* ── PAGE HEADER ── */
+.page-header{
+  padding:120px 48px 60px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
 }
-.hero-img{
-  width:100%;height:100%;object-fit:cover;object-position:center top;
-  display:block;transition:transform 8s ease;
+.page-header-eyebrow{
+  font-size:9px;font-weight:200;letter-spacing:0.55em;
+  text-transform:uppercase;opacity:0.5;
 }
-#hero:hover .hero-img{transform:scale(1.015);}
-.hero-placeholder{
-  width:100%;height:100%;
-  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:14px;
-}
-body.night .hero-placeholder{background:linear-gradient(135deg,#1C1B24,#28263A,#1C1B24);}
-body.day   .hero-placeholder{background:linear-gradient(135deg,#EDF3EE,#E4EFE6,#EDF3EE);}
-.hero-ph-icon{font-size:56px;opacity:0.1;}
-.hero-ph-text{
+body.night .page-header-eyebrow{color:var(--night-purple-mid);}
+body.day   .page-header-eyebrow{color:var(--day-green-deep);}
+.page-header-title{
   font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-size:clamp(13px,1.8vw,17px);letter-spacing:0.1em;opacity:0.3;
-}
-body.night .hero-ph-text{color:var(--night-purple-fog);}
-body.day   .hero-ph-text{color:var(--day-green-deep);}
-
-.hero-overlay{
-  position:absolute;inset:0;pointer-events:none;
-}
-body.night .hero-overlay{
-  background:linear-gradient(to bottom,
-    rgba(17,17,21,0.1) 0%,transparent 20%,
-    transparent 50%,rgba(17,17,21,0.75) 85%,rgba(17,17,21,1) 100%);
-}
-body.day .hero-overlay{
-  background:linear-gradient(to bottom,
-    rgba(247,249,247,0.05) 0%,transparent 20%,
-    transparent 50%,rgba(247,249,247,0.8) 85%,rgba(247,249,247,1) 100%);
+  font-weight:300;font-size:clamp(28px,4vw,44px);
+  letter-spacing:0.06em;opacity:0.9;
 }
 
-/* social layer — auto visible, fades in with page */
-#social-layer{
-  position:absolute;inset:0;pointer-events:auto;
-  opacity:0;animation:fadeUp 1s ease 0.5s forwards;
+/* ── FILTER BAR ── */
+.filter-bar{
+  display:flex;align-items:center;justify-content:center;
+  gap:32px;padding:0 48px 52px;flex-wrap:wrap;
 }
-.social-cluster{position:absolute;display:flex;flex-direction:column;gap:10px;}
-.social-cluster.joss{left:clamp(20px,5vw,68px);top:50%;transform:translateY(-48%);}
-.social-cluster.gawin{right:clamp(20px,5vw,68px);top:50%;transform:translateY(-52%);}
-.cluster-label{
-  font-size:9px;font-weight:200;letter-spacing:0.4em;
-  text-transform:uppercase;margin-bottom:2px;opacity:0.7;
+.filter-btn{
+  background:none;border:none;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-weight:200;
+  font-size:10px;letter-spacing:0.35em;text-transform:uppercase;
+  opacity:0.4;transition:opacity 0.25s;padding:0;
+  position:relative;
 }
-.joss .cluster-label{padding-left:2px;}
-.gawin .cluster-label{text-align:right;padding-right:2px;}
-body.night .cluster-label{color:var(--night-purple-fog);}
-body.day   .cluster-label{color:var(--day-green-deep);}
-.social-item{
-  display:flex;align-items:center;gap:8px;text-decoration:none;
-  padding:3px 0;opacity:0.82;transition:opacity 0.22s,transform 0.22s;
+.filter-btn::after{
+  content:'';position:absolute;bottom:-4px;left:0;right:0;
+  height:0.5px;transform:scaleX(0);
+  transition:transform 0.3s var(--ease);
 }
-.social-item:hover{opacity:1;transform:translateX(3px);}
-.gawin .social-item{flex-direction:row-reverse;}
-.gawin .social-item:hover{transform:translateX(-3px);}
-.social-icon{width:15px;height:15px;flex-shrink:0;}
-body.night .social-icon{color:var(--night-purple-fog);}
-body.day   .social-icon{color:var(--day-green-deep);}
-.social-name{font-size:11px;font-weight:200;letter-spacing:0.06em;white-space:nowrap;}
-body.night .social-name{color:var(--night-white);}
-body.day   .social-name{color:var(--day-black);}
-@media(max-width:640px){
-  .social-name{display:none;}
-  .social-cluster.joss{left:12px;}
-  .social-cluster.gawin{right:12px;}
-}
+.filter-btn.active{opacity:1;}
+.filter-btn.active::after{transform:scaleX(1);}
+.filter-btn:hover{opacity:0.8;}
+body.night .filter-btn{color:var(--night-white);}
+body.night .filter-btn::after{background:var(--night-purple-fog);}
+body.day   .filter-btn{color:var(--day-black);}
+body.day   .filter-btn::after{background:var(--day-green-deep);}
 
-/* hero cp name */
-.hero-cp{
-  position:absolute;bottom:80px;
-  left:0;right:0;
-  text-align:center;
-  font-family:'Great Vibes',cursive;font-size:clamp(32px,5vw,54px);
-  letter-spacing:0.04em;white-space:nowrap;pointer-events:none;
-  opacity:0;animation:fadeUp 1s ease 0.6s forwards;
+/* ── MASONRY GRID ── */
+.gallery-grid{
+  columns:3 280px;
+  column-gap:16px;
+  padding:0 40px 100px;
+  max-width:1400px;
+  margin:0 auto;
 }
 @media(max-width:640px){
-  .hero-cp{ bottom:22vh; }
+  .gallery-grid{columns:2 140px;column-gap:10px;padding:0 16px 80px;}
 }
-body.night .hero-cp{color:var(--night-purple-fog);}
-body.day   .hero-cp{color:var(--day-green-deep);}
 
-/* scroll hint */
-.scroll-hint{
-  position:absolute;bottom:30px;
-  left:0;right:0;
-  display:flex;flex-direction:column;align-items:center;gap:7px;
+/* ── CARD ── */
+.gallery-card{
+  break-inside:avoid;
+  position:relative;
+  margin-bottom:16px;
+  overflow:hidden;
+  cursor:pointer;
+  /* no border-radius — editorial flat feel */
+}
+@media(max-width:640px){
+  .gallery-card{margin-bottom:10px;}
+}
+
+.gallery-card img{
+  display:block;width:100%;height:auto;
+  transition:transform 0.65s var(--ease),filter 0.65s var(--ease);
+  filter:brightness(1) saturate(0.92);
+}
+.gallery-card:hover img{
+  transform:scale(1.04);
+  filter:brightness(0.72) saturate(0.85);
+}
+
+/* overlay — hidden until hover */
+.card-overlay{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  justify-content:space-between;
+  padding:18px 16px;
   pointer-events:none;
-  opacity:0;animation:fadeUp 1s ease 0.8s forwards;
-}
-@media(max-width:640px){
-  .scroll-hint{ bottom:14vh; }
-}
-.scroll-hint-text{
-  font-size:9px;font-weight:200;letter-spacing:0.45em;
-  text-transform:uppercase;opacity:0.8;
-}
-body.night .scroll-hint-text{color:var(--night-purple-fog);}
-body.day   .scroll-hint-text{color:var(--day-green-deep);}
-.scroll-line{width:0.5px;animation:sDrop 2.2s ease-in-out infinite;}
-body.night .scroll-line{background:var(--night-purple-mid);}
-body.day   .scroll-line{background:var(--day-green-core);}
-@keyframes sDrop{
-  0%{height:0;opacity:1;transform:translateY(0);}
-  100%{height:26px;opacity:0;transform:translateY(8px);}
 }
 
-/* ── TIMELINE ── */
-#timeline{
-  position:relative;padding:100px 0 48px;overflow:hidden;
-}
-body.night #timeline{background:linear-gradient(to bottom,var(--night-bg-0) 0%,var(--night-bg-1) 50%,var(--night-bg-0) 100%);}
-body.day   #timeline{background:linear-gradient(to bottom,var(--day-bg-0) 0%,var(--day-bg-1) 50%,var(--day-bg-0) 100%);}
-
-.tl-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;}
-
-.tl-head{
-  text-align:center;margin-bottom:72px;
-  opacity:0;transform:translateY(16px);
-  transition:opacity 0.9s ease,transform 0.9s ease;
-}
-.tl-head.in{opacity:1;transform:translateY(0);}
-.tl-sub{font-size:9px;font-weight:200;letter-spacing:0.55em;text-transform:uppercase;opacity:0.7;}
-body.night .tl-sub{color:var(--night-purple-mid);}
-body.day   .tl-sub{color:var(--day-green-deep);}
-
-.tl-nodes{position:relative;max-width:860px;margin:0 auto;padding:0 40px;}
-
-/* unified nodes */
-.tnode{
-  position:relative;margin-bottom:68px;
-  opacity:0;transform:translateY(14px);
-  transition:opacity 0.7s ease,transform 0.7s ease;
-  cursor:pointer;
-}
-.tnode.in{opacity:1;transform:translateY(0);}
-.tnode.left {margin-right:50%;text-align:right;padding-right:44px;}
-.tnode.right{margin-left:50%;text-align:left;padding-left:44px;}
-
-/* 2023 centered — override left/right */
-.tnode.center{
-  margin-left:0;margin-right:0;
-  text-align:center;padding:0;
-  display:flex;flex-direction:column;align-items:center;
-}
-
-.tnode::after{
-  content:'';position:absolute;top:16px;
-  width:6px;height:6px;border-radius:50%;
-  transition:transform 0.3s,box-shadow 0.3s;
-}
-.tnode.left::after{right:22px;}
-.tnode.right::after{left:22px;}
-/* center node: dot goes below the year text, not beside */
-.tnode.center::after{
-  position:static;margin-top:8px;display:block;
-  width:7px;height:7px;
-}
-.tnode:hover::after{transform:scale(1.7);}
-body.night .tnode::after{background:var(--night-purple-mid);}
-body.day   .tnode::after{background:var(--day-green-core);}
-body.night .tnode:hover::after{box-shadow:0 0 10px rgba(122,110,168,0.6);}
-body.day   .tnode:hover::after{box-shadow:0 0 10px rgba(123,176,138,0.6);}
-.tnode.center:hover::after{transform:scale(1.5);}
-
-.tnode-year{
+/* top center: magazine name */
+.card-mag{
+  align-self:center;
   font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-weight:300;font-size:clamp(30px,5vw,52px);
-  letter-spacing:0.04em;line-height:1;
+  font-weight:300;font-size:clamp(13px,1.4vw,16px);
+  letter-spacing:0.08em;color:#fff;
+  text-align:center;
+  opacity:0;transform:translateY(-6px);
+  transition:opacity 0.45s var(--ease),transform 0.45s var(--ease);
+  text-shadow:0 1px 12px rgba(0,0,0,0.5);
 }
-body.night .tnode-year{color:var(--night-white);}
-body.day   .tnode-year{color:var(--day-black);}
-.tnode-label{
-  font-weight:200;font-size:10px;letter-spacing:0.32em;
-  text-transform:uppercase;margin-top:5px;opacity:0.65;
-}
-body.night .tnode-label{color:var(--night-purple-fog);}
-body.day   .tnode-label{color:var(--day-green-deep);}
+.gallery-card:hover .card-mag{opacity:1;transform:translateY(0);}
 
-/* future node */
-.tnode.future{cursor:default;}
-.tnode.future::after{display:none;}
-/* future top: keep the dot for "and the road goes on" */
-.tnode.future-top{cursor:default;}
-.tnode.future-top .tnode-year{font-size:clamp(14px,2vw,20px);opacity:0.5;}
-.tnode.future-top::after{
-  position:static;margin-top:6px;display:block;
-  width:5px;height:5px;opacity:0.5;
+/* bottom row */
+.card-bottom{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:8px;
 }
 
-/* before they met */
-.btm-label{
-  text-align:center;margin:0 0 52px;
-  font-size:9px;font-weight:200;letter-spacing:0.45em;text-transform:uppercase;
-  opacity:0;transform:translateY(10px);
-  transition:opacity 0.7s ease,transform 0.7s ease;
+/* bottom-left: type tag */
+.card-tag{
+  font-weight:200;font-size:9px;letter-spacing:0.35em;
+  text-transform:uppercase;color:rgba(255,255,255,0.82);
+  opacity:0;transform:translateY(6px);
+  transition:opacity 0.45s var(--ease) 0.05s,transform 0.45s var(--ease) 0.05s;
+  text-shadow:0 1px 8px rgba(0,0,0,0.5);
+  white-space:nowrap;
 }
-.btm-label.in{opacity:0.45;transform:translateY(0);}
-body.night .btm-label{color:var(--night-purple-fog);}
-body.day   .btm-label{color:var(--day-black);opacity:0.55;}
+.gallery-card:hover .card-tag{opacity:1;transform:translateY(0);}
 
-/* split zone */
-.split-zone{display:flex;position:relative;padding-bottom:20px;}
-.split-col{flex:1;display:flex;flex-direction:column;}
-.joss-col {align-items:flex-end;padding-right:52px;}
-.gawin-col{align-items:flex-start;padding-left:52px;}
-
-/* origin nodes pushed further apart */
-.joss-col  .origin-si{ transform:translateX(-32px); }
-.gawin-col .origin-si{ transform:translateX(32px); }
-
-.joss-col  .tnode-si:nth-child(1){--sx:-24px;}
-.joss-col  .tnode-si:nth-child(2){--sx:10px;}
-.joss-col  .tnode-si:nth-child(3){--sx:-16px;}
-.gawin-col .tnode-si:nth-child(1){--sx:24px;}
-.gawin-col .tnode-si:nth-child(2){--sx:-10px;}
-.gawin-col .tnode-si:nth-child(3){--sx:16px;}
-
-.tnode-si{
-  position:relative;margin-bottom:64px;
-  opacity:0;transform:translateX(var(--sx,0)) translateY(14px);
-  transition:opacity 0.7s ease,transform 0.7s ease;
-  cursor:pointer;
+/* bottom-right: date */
+.card-date{
+  font-weight:200;font-size:9px;letter-spacing:0.2em;
+  color:rgba(255,255,255,0.7);text-align:right;
+  opacity:0;transform:translateY(6px);
+  transition:opacity 0.45s var(--ease) 0.08s,transform 0.45s var(--ease) 0.08s;
+  text-shadow:0 1px 8px rgba(0,0,0,0.5);
+  white-space:nowrap;
 }
-.tnode-si.in{opacity:1;transform:translateX(var(--sx,0)) translateY(0);}
-.joss-col  .tnode-si{text-align:right;}
-.gawin-col .tnode-si{text-align:left;}
+.gallery-card:hover .card-date{opacity:1;transform:translateY(0);}
 
-.tnode-si::after{
-  content:'';position:absolute;top:18px;
-  width:5px;height:5px;border-radius:50%;opacity:0.55;
-  transition:opacity 0.3s,transform 0.3s;
+/* subtle vignette overlay that only appears on hover */
+.card-vignette{
+  position:absolute;inset:0;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.18) 0%,
+    transparent 30%,
+    transparent 60%,
+    rgba(0,0,0,0.38) 100%
+  );
+  opacity:0;transition:opacity 0.5s var(--ease);
+  pointer-events:none;
 }
-.joss-col  .tnode-si::after{right:-28px;}
-.gawin-col .tnode-si::after{left:-28px;}
-body.night .tnode-si::after{background:var(--night-purple-mid);}
-body.day   .tnode-si::after{background:var(--day-green-core);}
-.tnode-si:hover::after{opacity:1;transform:scale(1.6);}
+.gallery-card:hover .card-vignette{opacity:1;}
 
-.origin-si{cursor:default;margin-bottom:0;}
-.origin-si::after{display:none;}
-.origin-si .split-year{font-size:clamp(14px,2vw,20px)!important;opacity:0.7;}
-.origin-dot{
-  width:5px;height:5px;border-radius:50%;opacity:1;margin-top:10px;
+/* mobile: always show overlay at reduced opacity */
+@media(hover:none){
+  .card-mag,.card-tag,.card-date{opacity:0.85;transform:none;}
+  .card-vignette{opacity:0.7;}
+  .gallery-card img{filter:brightness(0.78) saturate(0.88);}
 }
-.joss-col  .origin-dot{margin-left:auto;}
-.gawin-col .origin-dot{margin-right:auto;}
-body.night .origin-dot{background:var(--night-purple-mid);}
-body.day   .origin-dot{background:var(--day-green-core);}
 
-.split-year{
+/* ── EMPTY STATE ── */
+.gallery-empty{
+  text-align:center;padding:80px 0;
   font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-weight:300;font-size:clamp(26px,4vw,44px);
-  letter-spacing:0.04em;line-height:1;
-}
-body.night .split-year{color:var(--night-white);}
-body.day   .split-year{color:var(--day-black);}
-.split-label{
-  font-weight:200;font-size:9px;letter-spacing:0.32em;
-  text-transform:uppercase;margin-top:4px;opacity:0.6;
-}
-body.night .split-label{color:var(--night-purple-fog);}
-body.day   .split-label{color:var(--day-green-deep);}
-
-/* ── NAV GRID ── */
-#nav-grid{padding:40px 48px 72px;}
-body.night #nav-grid{background:var(--night-bg-0);}
-body.day   #nav-grid{background:var(--day-bg-0);}
-
-.ng-eyebrow{
-  text-align:center;margin-bottom:56px;
-  font-size:9px;font-weight:200;letter-spacing:0.5em;
-  text-transform:uppercase;opacity:0.45;
-}
-body.night .ng-eyebrow{color:var(--night-purple-fog);}
-body.day   .ng-eyebrow{color:var(--day-green-deep);}
-.ng-grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
-  gap:44px 36px;max-width:900px;margin:0 auto;
-}
-.ng-item{
-  display:flex;flex-direction:column;gap:8px;
-  text-decoration:none;cursor:pointer;
-  opacity:0;transform:translateY(12px);
-  transition:opacity 0.6s ease,transform 0.6s ease;
-}
-.ng-item.in{opacity:1;transform:translateY(0);}
-.ng-item::before{
-  content:'';display:block;width:24px;height:0.5px;margin-bottom:2px;
-  transition:width 0.4s var(--ease);
-}
-body.night .ng-item::before{background:var(--night-purple-core);}
-body.day   .ng-item::before{background:var(--day-green-core);}
-.ng-item:hover::before{width:42px;}
-.ng-num{font-size:9px;font-weight:200;letter-spacing:0.3em;opacity:0.5;}
-body.night .ng-num{color:var(--night-purple-fog);}
-body.day   .ng-num{color:var(--day-green-deep);}
-.ng-title{
-  font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-weight:300;font-size:clamp(18px,2.2vw,24px);
-  letter-spacing:0.04em;opacity:0.92;transition:opacity 0.25s;
-}
-body.night .ng-title{color:var(--night-white);}
-body.day   .ng-title{color:var(--day-black);}
-.ng-item:hover .ng-title{opacity:1;}
-.ng-desc{font-size:10px;font-weight:200;letter-spacing:0.14em;opacity:0.58;line-height:1.6;}
-body.night .ng-desc{color:var(--night-purple-fog);}
-body.day   .ng-desc{color:var(--day-green-deep);}
-.ng-soon{
-  text-align:center;margin-top:68px;
-  font-family:'Cormorant Garamond',serif;font-style:italic;
-  font-weight:300;font-size:clamp(13px,1.8vw,17px);
-  letter-spacing:0.1em;opacity:0.45;
+  font-weight:300;font-size:18px;letter-spacing:0.08em;opacity:0.3;
 }
 
 /* ── FOOTER ── */
 #footer{
   padding:28px 48px;
-  display:flex;align-items:center;justify-content:center;border-top:0.5px solid;
+  display:flex;align-items:center;justify-content:center;
+  border-top:0.5px solid;
 }
 body.night #footer{border-color:var(--night-line);background:var(--night-bg-0);}
 body.day   #footer{border-color:var(--day-line);background:var(--day-bg-0);}
 .footer-text{
   font-size:9px;font-weight:200;letter-spacing:0.3em;
-  text-transform:uppercase;opacity:0.55;text-align:center;
+  text-transform:uppercase;opacity:0.45;text-align:center;
 }
 body.night .footer-text{color:var(--night-purple-fog);}
 body.day   .footer-text{color:var(--day-black);}
-
-@media(max-width:640px){
-  #nav-grid{padding:48px 24px 72px;}
-  #footer{padding:22px 24px;}
-  .tnode.left{margin-right:44%;padding-right:36px;}
-  .tnode.right{margin-left:44%;padding-left:36px;}
-  .joss-col{padding-right:36px;}
-  .gawin-col{padding-left:36px;}
-  /* move joss dot to LEFT side on mobile to avoid collision */
-  .joss-col .tnode-si::after{
-    right:auto;
-    left:-22px;
-  }
-}
 </style>
 </head>
 <body>
 
 <!-- NAV -->
 <nav id="nav">
-  <div class="nav-logo">JossGawin</div>
+  <a class="nav-logo" href="../index.html">JossGawin</a>
   <ul class="nav-links">
     <li><a href="#" data-i18n="nav-profile">Profile</a></li>
     <li><a href="#" data-i18n="nav-calendar">Calendar</a></li>
-    <li><a href="#timeline" data-i18n="nav-timeline">Timeline</a></li>
+    <li><a href="#" data-i18n="nav-timeline">Timeline</a></li>
     <li><a href="#" data-i18n="nav-works">Works</a></li>
     <li><a href="#" data-i18n="nav-fashion">Fashion</a></li>
     <li><a href="#" data-i18n="nav-social">Social</a></li>
-    <li><a href="#" data-i18n="nav-gallery">Gallery</a></li>
+    <li><a href="#" class="active" data-i18n="nav-gallery">Gallery</a></li>
     <li><a href="#" data-i18n="nav-contact">Contact</a></li>
   </ul>
   <div class="nav-right">
@@ -571,11 +342,12 @@ body.day   .footer-text{color:var(--day-black);}
     </div>
   </div>
 </nav>
-<!-- MOBILE DROPDOWN — text only, aligned to lang row -->
+
+<!-- MOBILE DROPDOWN -->
 <div class="nav-dropdown" id="navDrop">
   <a href="#" data-i18n="nav-profile" onclick="closeMenu()">Profile</a>
   <a href="#" data-i18n="nav-calendar" onclick="closeMenu()">Calendar</a>
-  <a href="#timeline" data-i18n="nav-timeline" onclick="closeMenu()">Timeline</a>
+  <a href="#" data-i18n="nav-timeline" onclick="closeMenu()">Timeline</a>
   <a href="#" data-i18n="nav-works" onclick="closeMenu()">Works</a>
   <a href="#" data-i18n="nav-fashion" onclick="closeMenu()">Fashion</a>
   <a href="#" data-i18n="nav-social" onclick="closeMenu()">Social</a>
@@ -583,140 +355,21 @@ body.day   .footer-text{color:var(--day-black);}
   <a href="#" data-i18n="nav-contact" onclick="closeMenu()">Contact</a>
 </div>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-placeholder">
-    <div class="hero-ph-icon">🐻🐧</div>
-    <div class="hero-ph-text">Joss × Gawin — Hero Photo</div>
-    <div class="hero-ph-text" style="font-size:11px;margin-top:2px;opacity:0.2;">replace with actual image</div>
-  </div>
-  <!-- <img class="hero-img" src="./assets/hero.webp" alt="Joss and Gawin"> -->
-  <div class="hero-overlay"></div>
-  <div class="hero-cp">JossGawin</div>
+<!-- PAGE HEADER -->
+<header class="page-header">
+  <div class="page-header-eyebrow" data-i18n="gallery-eyebrow">Magazine</div>
+  <div class="page-header-title" data-i18n="gallery-title">Gallery</div>
+</header>
 
-  <div id="social-layer">
-    <div class="social-cluster joss">
-      <div class="cluster-label">Joss</div>
-      <a class="social-item" href="https://www.instagram.com/josswayar" target="_blank" rel="noopener">
-        <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-        <span class="social-name">josswayar</span>
-      </a>
-      <a class="social-item" href="https://x.com/Josswayar" target="_blank" rel="noopener">
-        <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        <span class="social-name">Josswayar</span>
-      </a>
-      <a class="social-item" href="https://www.youtube.com/@josswayar1" target="_blank" rel="noopener">
-        <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.49 3.5 12 3.5 12 3.5s-7.49 0-9.38.55A3.02 3.02 0 0 0 .5 6.19C0 8.09 0 12 0 12s0 3.91.5 5.81a3.02 3.02 0 0 0 2.12 2.14C4.51 20.5 12 20.5 12 20.5s7.49 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14C24 15.91 24 12 24 12s0-3.91-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
-        <span class="social-name">josswayar1</span>
-      </a>
-    </div>
-    <div class="social-cluster gawin">
-      <div class="cluster-label">Gawin</div>
-      <a class="social-item" href="https://www.instagram.com/gawincaskeyy" target="_blank" rel="noopener">
-        <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4.5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
-        <span class="social-name">gawincaskeyy</span>
-      </a>
-      <a class="social-item" href="https://x.com/gawincaskey" target="_blank" rel="noopener">
-        <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
-        <span class="social-name">gawincaskey</span>
-      </a>
-      <a class="social-item" href="https://www.youtube.com/@iamgawincaskey" target="_blank" rel="noopener">
-        <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.49 3.5 12 3.5 12 3.5s-7.49 0-9.38.55A3.02 3.02 0 0 0 .5 6.19C0 8.09 0 12 0 12s0 3.91.5 5.81a3.02 3.02 0 0 0 2.12 2.14C4.51 20.5 12 20.5 12 20.5s7.49 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14C24 15.91 24 12 24 12s0-3.91-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/></svg>
-        <span class="social-name">iamgawincaskey</span>
-      </a>
-    </div>
-  </div>
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all" onclick="applyFilter('all')" data-i18n="filter-all">All</button>
+  <button class="filter-btn" data-filter="duo" onclick="applyFilter('duo')" data-i18n="filter-duo">Duo</button>
+  <button class="filter-btn" data-filter="solo" onclick="applyFilter('solo')" data-i18n="filter-solo">Solo</button>
+</div>
 
-  <div class="scroll-hint">
-    <div class="scroll-hint-text" data-i18n="scroll-hint">scroll</div>
-    <div class="scroll-line"></div>
-  </div>
-</section>
-
-<!-- TIMELINE -->
-<section id="timeline">
-  <svg class="tl-svg" id="tlSvg" preserveAspectRatio="none"></svg>
-  <div class="tl-head" id="tlHead">
-    <div class="tl-sub" data-i18n="tl-sub">Their Story</div>
-  </div>
-  <div class="tl-nodes">
-
-    <!-- future top with dot -->
-    <div class="tnode future-top right" style="transition-delay:0.05s">
-      <div class="tnode-year">and the road goes on...</div>
-    </div>
-
-    <div class="tnode left" data-year="2026" style="transition-delay:0.1s">
-      <div class="tnode-year">2026</div>
-      <div class="tnode-label" data-i18n="tl-together">together · ด้วยกัน</div>
-    </div>
-    <div class="tnode right" data-year="2025" style="transition-delay:0.15s">
-      <div class="tnode-year">2025</div>
-      <div class="tnode-label" data-i18n="tl-together">together · ด้วยกัน</div>
-    </div>
-    <div class="tnode left" data-year="2024" style="transition-delay:0.2s">
-      <div class="tnode-year">2024</div>
-      <div class="tnode-label" data-i18n="tl-together">together · ด้วยกัน</div>
-    </div>
-
-    <!-- 2023 centered, dot below year -->
-    <div class="tnode center" data-year="2023" style="transition-delay:0.25s">
-      <div class="tnode-year">2023</div>
-      <div class="tnode-label" data-i18n="tl-2023">the beginning · เริ่มต้น</div>
-    </div>
-
-    <div class="btm-label" style="transition-delay:0.28s">— before they met —</div>
-
-    <div class="split-zone">
-      <div class="split-col joss-col">
-        <div class="tnode-si" data-year="2022-joss">
-          <div class="split-year">2022</div>
-          <div class="split-label">Joss</div>
-        </div>
-        <div class="tnode-si" data-year="2021-joss">
-          <div class="split-year">2021</div>
-          <div class="split-label">Joss</div>
-        </div>
-        <div class="tnode-si origin-si">
-          <div class="split-year">upon a time</div>
-          <div class="split-label" data-i18n="tl-origin">where it all began</div>
-          <div class="origin-dot"></div>
-        </div>
-      </div>
-      <div class="split-col gawin-col">
-        <div class="tnode-si" data-year="2022-gawin">
-          <div class="split-year">2022</div>
-          <div class="split-label">Gawin</div>
-        </div>
-        <div class="tnode-si" data-year="2021-gawin">
-          <div class="split-year">2021</div>
-          <div class="split-label">Gawin</div>
-        </div>
-        <div class="tnode-si origin-si">
-          <div class="split-year">upon a time</div>
-          <div class="split-label" data-i18n="tl-origin">where it all began</div>
-          <div class="origin-dot"></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- NAV GRID -->
-<section id="nav-grid">
-  <div class="ng-eyebrow" data-i18n="ng-head">Explore</div>
-  <div class="ng-grid">
-    <a class="ng-item" href="#"><span class="ng-num">01</span><span class="ng-title" data-i18n="nav-profile">Profile</span><span class="ng-desc" data-i18n="ng-profile-desc">Joss & Gawin — who they are</span></a>
-    <a class="ng-item" href="#"><span class="ng-num">02</span><span class="ng-title" data-i18n="nav-calendar">Calendar</span><span class="ng-desc" data-i18n="ng-calendar-desc">Schedules & upcoming events</span></a>
-    <a class="ng-item" href="#timeline"><span class="ng-num">03</span><span class="ng-title" data-i18n="nav-timeline">Timeline</span><span class="ng-desc" data-i18n="ng-timeline-desc">The road they've walked</span></a>
-    <a class="ng-item" href="#"><span class="ng-num">04</span><span class="ng-title" data-i18n="nav-works">Works</span><span class="ng-desc" data-i18n="ng-works-desc">Dramas, films & projects</span></a>
-    <a class="ng-item" href="#"><span class="ng-num">05</span><span class="ng-title" data-i18n="nav-fashion">Fashion</span><span class="ng-desc" data-i18n="ng-fashion-desc">Brand collaborations & looks</span></a>
-    <a class="ng-item" href="#"><span class="ng-num">06</span><span class="ng-title" data-i18n="nav-social">Social</span><span class="ng-desc" data-i18n="ng-social-desc">Latest posts & updates</span></a>
-    <a class="ng-item" href="#"><span class="ng-num">07</span><span class="ng-title" data-i18n="nav-gallery">Gallery</span><span class="ng-desc" data-i18n="ng-gallery-desc">Photos & moments</span></a>
-    <a class="ng-item" href="#"><span class="ng-num">08</span><span class="ng-title" data-i18n="nav-contact">Contact</span><span class="ng-desc" data-i18n="ng-contact-desc">Get in touch</span></a>
-  </div>
-  <div class="ng-soon" data-i18n="ng-soon">— more sections coming soon —</div>
-</section>
+<!-- GALLERY GRID -->
+<main class="gallery-grid" id="galleryGrid"></main>
 
 <!-- FOOTER -->
 <footer id="footer">
@@ -732,7 +385,6 @@ function toggleTheme(){
   isNight = !isNight;
   document.body.classList.toggle('night', isNight);
   document.body.classList.toggle('day', !isNight);
-  setTimeout(drawPath, 50);
 }
 
 // ── LANG ──
@@ -745,54 +397,29 @@ const T = {
     'nav-profile':'简介','nav-calendar':'行程','nav-timeline':'时间轴',
     'nav-works':'作品','nav-fashion':'时尚','nav-social':'动态',
     'nav-gallery':'画廊','nav-contact':'联系',
-    'scroll-hint':'向下滑动','tl-sub':'他们的故事',
-    'tl-together':'在一起 · ด้วยกัน','tl-2023':'初相遇 · เริ่มต้น',
-    'tl-origin':'从前从前','ng-head':'探索',
-    'ng-profile-desc':'Joss 与 Gawin — 关于他们',
-    'ng-calendar-desc':'日程与即将到来的活动',
-    'ng-timeline-desc':'他们共同走过的路',
-    'ng-works-desc':'剧集、电影与项目',
-    'ng-fashion-desc':'品牌合作与造型',
-    'ng-social-desc':'最新动态',
-    'ng-gallery-desc':'照片与精彩时刻',
-    'ng-contact-desc':'联系我们',
-    'ng-soon':'— 更多内容即将上线 —'
+    'gallery-eyebrow':'杂志','gallery-title':'画廊',
+    'filter-all':'全部','filter-duo':'双人','filter-solo':'单人',
+    'type-duo':'双人','type-solo':'单人',
   },
   en:{
     'nav-profile':'Profile','nav-calendar':'Calendar','nav-timeline':'Timeline',
     'nav-works':'Works','nav-fashion':'Fashion','nav-social':'Social',
     'nav-gallery':'Gallery','nav-contact':'Contact',
-    'scroll-hint':'scroll','tl-sub':'Their Story',
-    'tl-together':'together · ด้วยกัน','tl-2023':'the beginning · เริ่มต้น',
-    'tl-origin':'where it all began','ng-head':'Explore',
-    'ng-profile-desc':'Joss & Gawin — who they are',
-    'ng-calendar-desc':'Schedules & upcoming events',
-    'ng-timeline-desc':"The road they've walked",
-    'ng-works-desc':'Dramas, films & projects',
-    'ng-fashion-desc':'Brand collaborations & looks',
-    'ng-social-desc':'Latest posts & updates',
-    'ng-gallery-desc':'Photos & moments',
-    'ng-contact-desc':'Get in touch',
-    'ng-soon':'— more sections coming soon —'
+    'gallery-eyebrow':'Magazine','gallery-title':'Gallery',
+    'filter-all':'All','filter-duo':'Duo','filter-solo':'Solo',
+    'type-duo':'Duo','type-solo':'Solo',
   },
   th:{
     'nav-profile':'โปรไฟล์','nav-calendar':'ตารางงาน','nav-timeline':'ไทม์ไลน์',
     'nav-works':'ผลงาน','nav-fashion':'แฟชั่น','nav-social':'โซเชียล',
     'nav-gallery':'แกลเลอรี่','nav-contact':'ติดต่อ',
-    'scroll-hint':'เลื่อนลง','tl-sub':'เรื่องราวของพวกเขา',
-    'tl-together':'ด้วยกัน','tl-2023':'จุดเริ่มต้น',
-    'tl-origin':'กาลครั้งหนึ่ง','ng-head':'สำรวจ',
-    'ng-profile-desc':'Joss & Gawin — พวกเขาคือใคร',
-    'ng-calendar-desc':'ตารางงานและกิจกรรมที่จะมาถึง',
-    'ng-timeline-desc':'เส้นทางที่พวกเขาเดินมาด้วยกัน',
-    'ng-works-desc':'ละคร ภาพยนตร์ และโปรเจกต์',
-    'ng-fashion-desc':'ความร่วมมือกับแบรนด์และสไตล์',
-    'ng-social-desc':'โพสต์และอัปเดตล่าสุด',
-    'ng-gallery-desc':'รูปภาพและช่วงเวลาดีๆ',
-    'ng-contact-desc':'ติดต่อเรา',
-    'ng-soon':'— กำลังมาเร็วๆ นี้ —'
+    'gallery-eyebrow':'นิตยสาร','gallery-title':'แกลเลอรี่',
+    'filter-all':'ทั้งหมด','filter-duo':'คู่','filter-solo':'เดี่ยว',
+    'type-duo':'คู่','type-solo':'เดี่ยว',
   }
 };
+
+function t(key){ return T[lang]?.[key] || T['en'][key] || key; }
 
 function setLang(l){
   lang = l;
@@ -801,16 +428,13 @@ function setLang(l){
     if(v) el.textContent = v;
   });
   document.querySelectorAll('.lang-btn').forEach(b=>{
-    const m = {'CN':'zh','EN':'en','TH':'th'};
-    b.classList.toggle('active', m[b.textContent] === l);
+    const m={'CN':'zh','EN':'en','TH':'th'};
+    b.classList.toggle('active', m[b.textContent]===l);
   });
+  // re-render cards so hover labels update
+  renderCards(currentFilter);
 }
 setLang(lang);
-
-// ── NAV SCROLL ──
-window.addEventListener('scroll',()=>{
-  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10);
-},{passive:true});
 
 // ── HAMBURGER ──
 let menuOpen = false;
@@ -821,90 +445,87 @@ function toggleMenu(){
 }
 function closeMenu(){
   menuOpen = false;
-  document.getElementById('hamBtn').classList.remove('open');
+  document.getElementById('hamBtn')?.classList.remove('open');
   document.getElementById('navDrop').classList.remove('open');
 }
 document.addEventListener('click', e=>{
   if(menuOpen && !e.target.closest('#nav') && !e.target.closest('#navDrop')) closeMenu();
 });
 
-// ── INTERSECTION OBSERVER ──
-const io = new IntersectionObserver(entries=>{
-  entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); }});
-},{threshold:0.1});
-document.querySelectorAll('.tnode,.tnode-si,.btm-label,.tl-head,.ng-item').forEach(el=>io.observe(el));
+// ── NAV SCROLL ──
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10);
+},{passive:true});
 
-// ── NODE CLICK ──
-document.querySelectorAll('.tnode[data-year],.tnode-si[data-year]').forEach(n=>{
-  n.addEventListener('click',()=>{ console.log('navigate to:', n.dataset.year); });
-});
+// ══════════════════════════════════════════════
+//  DATA — add new entries here, UI auto-updates
+// ══════════════════════════════════════════════
+const GALLERY_DATA = [
+  {
+    // type: 'duo' | 'solo'
+    type: 'duo',
+    img: 'https://lofficielthailand.com/wp-content/uploads/2025/04/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%A5%E0%B8%B2%E0%B8%A2%E0%B8%99%E0%B9%89%E0%B8%B3COOL-GUY_JOSS-KAWIN-11-1638x2048.jpg',
+    url: 'https://lofficielthailand.com/2025/04/lofficiel-cool-guy-the-young-blood-joss-gawin/',
+    date: 'April 1, 2025',
+    mag:  { zh:"L'Officiel 泰国", en:"L'Officiel Thailand", th:"L'Officiel Thailand" },
+    tag:  { zh:'双人', en:'Duo', th:'คู่' },
+  },
+  {
+    type: 'duo',
+    img: 'https://ellementhailand.com/wp-content/uploads/2025/03/S__87670791_0-1229x1536.png',
+    url: 'https://ellementhailand.com/elle-men-voices-march-2025-joss-gawin/',
+    date: 'March 17, 2025',
+    mag:  { zh:'Elle Men 泰国', en:'Elle Men Thailand', th:'Elle Men Thailand' },
+    tag:  { zh:'双人', en:'Duo', th:'คู่' },
+  },
+  // ── add more entries below in the same format ──
+];
 
-// ── SVG PATH ──
-function drawPath(){
-  const sec = document.getElementById('timeline');
-  const svg = document.getElementById('tlSvg');
-  if(!sec||!svg) return;
-  const W = sec.offsetWidth, H = sec.offsetHeight;
-  if(!W||!H) return;
-  svg.setAttribute('viewBox',`0 0 ${W} ${H}`);
-  const sr = sec.getBoundingClientRect();
+// ── RENDER ──
+let currentFilter = 'all';
 
-  function pos(el){
-    if(!el) return null;
-    const r = el.getBoundingClientRect();
-    return { x: r.left-sr.left+r.width/2, y: r.top-sr.top+r.height/2 };
+function renderCards(filter){
+  currentFilter = filter;
+  const grid = document.getElementById('galleryGrid');
+  const data = filter === 'all'
+    ? GALLERY_DATA
+    : GALLERY_DATA.filter(d => d.type === filter);
+
+  if(data.length === 0){
+    grid.innerHTML = `<div class="gallery-empty">${t('filter-all')} — 0</div>`;
+    return;
   }
 
-  const cx = W/2, topY = 30;
-  const p2023 = pos(document.querySelector('.tnode[data-year="2023"]'));
-  const meet  = p2023 || {x:cx, y:H*0.42};
-
-  const jItems  = document.querySelectorAll('.joss-col .tnode-si:not(.origin-si)');
-  const gItems  = document.querySelectorAll('.gawin-col .tnode-si:not(.origin-si)');
-  const jOrigin = document.querySelector('.joss-col .origin-si');
-  const gOrigin = document.querySelector('.gawin-col .origin-si');
-
-  const j0   = jItems[0]  ? pos(jItems[0])  : {x:W*0.28, y:meet.y+H*0.14};
-  const j1   = jItems[1]  ? pos(jItems[1])  : {x:W*0.24, y:meet.y+H*0.26};
-  const jEnd = jOrigin    ? pos(jOrigin)     : {x:W*0.22, y:H*0.9};
-  const g0   = gItems[0]  ? pos(gItems[0])  : {x:W*0.72, y:meet.y+H*0.14};
-  const g1   = gItems[1]  ? pos(gItems[1])  : {x:W*0.76, y:meet.y+H*0.26};
-  const gEnd = gOrigin    ? pos(gOrigin)     : {x:W*0.78, y:H*0.9};
-
-  const uni = `M ${cx} ${topY}
-    C ${cx+W*0.09} ${topY+H*0.06}, ${cx-W*0.07} ${topY+H*0.13}, ${cx+W*0.05} ${topY+H*0.20}
-    C ${cx+W*0.11} ${topY+H*0.27}, ${cx-W*0.06} ${topY+H*0.32}, ${meet.x} ${meet.y}`;
-
-  const jp = `M ${meet.x} ${meet.y}
-    C ${meet.x-W*0.07} ${meet.y+H*0.03}, ${j0.x+W*0.05} ${j0.y-H*0.02}, ${j0.x} ${j0.y}
-    C ${j0.x-W*0.06} ${j0.y+H*0.04}, ${j1.x+W*0.04} ${j1.y-H*0.02}, ${j1.x} ${j1.y}
-    C ${j1.x-W*0.05} ${j1.y+H*0.04}, ${jEnd.x+W*0.04} ${jEnd.y-H*0.03}, ${jEnd.x} ${jEnd.y}`;
-
-  const gp = `M ${meet.x} ${meet.y}
-    C ${meet.x+W*0.07} ${meet.y+H*0.03}, ${g0.x-W*0.05} ${g0.y-H*0.02}, ${g0.x} ${g0.y}
-    C ${g0.x+W*0.06} ${g0.y+H*0.04}, ${g1.x-W*0.04} ${g1.y-H*0.02}, ${g1.x} ${g1.y}
-    C ${g1.x+W*0.05} ${g1.y+H*0.04}, ${gEnd.x-W*0.04} ${gEnd.y-H*0.03}, ${gEnd.x} ${gEnd.y}`;
-
-  const c1 = isNight?'#4A3F72':'#7BB08A';
-  const c2 = isNight?'#7A6EA8':'#4D8A62';
-  const c3 = isNight?'#B8B0D4':'#B8D9C2';
-
-  svg.innerHTML = `<defs>
-    <linearGradient id="ug" x1="0" y1="${topY}" x2="0" y2="${meet.y}" gradientUnits="userSpaceOnUse">
-      <stop offset="0%"   stop-color="${c1}" stop-opacity="0.55"/>
-      <stop offset="100%" stop-color="${c2}" stop-opacity="0.28"/>
-    </linearGradient>
-    <linearGradient id="sg" x1="0" y1="${meet.y}" x2="0" y2="${Math.max(jEnd.y,gEnd.y)}" gradientUnits="userSpaceOnUse">
-      <stop offset="0%"   stop-color="${c2}" stop-opacity="0.30"/>
-      <stop offset="100%" stop-color="${c3}" stop-opacity="0.05"/>
-    </linearGradient>
-  </defs>
-  <path d="${uni}" fill="none" stroke="url(#ug)" stroke-width="0.7" stroke-dasharray="5 8"/>
-  <path d="${jp}"  fill="none" stroke="url(#sg)" stroke-width="0.6" stroke-dasharray="4 9"/>
-  <path d="${gp}"  fill="none" stroke="url(#sg)" stroke-width="0.6" stroke-dasharray="4 9"/>`;
+  grid.innerHTML = data.map(d => `
+    <div class="gallery-card" onclick="window.open('${d.url}','_blank')">
+      <img
+        src="${d.img}"
+        alt="${d.mag[lang] || d.mag.en}"
+        loading="lazy"
+      >
+      <div class="card-vignette"></div>
+      <div class="card-overlay">
+        <div class="card-mag">${d.mag[lang] || d.mag.en}</div>
+        <div class="card-bottom">
+          <div class="card-tag">${d.tag[lang] || d.tag.en}</div>
+          <div class="card-date">${d.date}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
 }
-window.addEventListener('load',   ()=> setTimeout(drawPath, 150));
-window.addEventListener('resize', ()=> setTimeout(drawPath, 80));
+
+// ── FILTER ──
+function applyFilter(filter){
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.filter === filter);
+  });
+  renderCards(filter);
+}
+
+// init
+renderCards('all');
 </script>
 </body>
 </html>
