@@ -3,547 +3,102 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>JossGawin — Enter</title>
+<title>JossGawin</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Outfit:wght@100;200;300&family=Great+Vibes&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Outfit:wght@100;200;300;400&family=Great+Vibes&display=swap" rel="stylesheet">
 <style>
-  :root {
-    /* Night — Joss 🐻 */
-    --night-bg-0: #111115;
-    --night-bg-1: #1C1B24;
-    --night-bg-2: #28263A;
-    --night-purple-core: #4A3F72;
-    --night-purple-mid: #7A6EA8;
-    --night-purple-fog: #B8B0D4;
-    --night-white: #E2DFEF;
-    --night-line: rgba(226,223,239,0.15);
-    --night-glass-bg: rgba(74,63,114,0.18);
-    --night-glass-border: rgba(184,176,212,0.18);
+:root{
+  --night-bg-0:#111115;--night-bg-1:#1C1B24;--night-bg-2:#28263A;
+  --night-purple-mid:#7A6EA8;--night-purple-fog:#B8B0D4;--night-white:#E2DFEF;
+  --day-bg-0:#F7F9F7;--day-bg-1:#EDF3EE;--day-bg-2:#E4EFE6;
+  --day-green-core:#7BB08A;--day-green-deep:#4D8A62;--day-black:#1A1C1A;
+  --ease:cubic-bezier(0.4,0,0.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;}
+body{
+  font-family:'Outfit',sans-serif;
+  -webkit-tap-highlight-color:transparent;
+  user-select:none;
+}
+body.night{background:radial-gradient(ellipse at 30% 40%,#28263A 0%,#1C1B24 45%,#111115 100%);}
+body.day  {background:radial-gradient(ellipse at 70% 60%,#E4EFE6 0%,#EDF3EE 45%,#F7F9F7 100%);}
 
-    /* Day — Gawin 🐧 */
-    --day-bg-0: #F7F9F7;
-    --day-bg-1: #EDF3EE;
-    --day-bg-2: #E4EFE6;
-    --day-green-core: #7BB08A;
-    --day-green-deep: #4D8A62;
-    --day-green-fog: #B8D9C2;
-    --day-crimson: #8B2635;
-    --day-black: #1A1C1A;
-    --day-line: rgba(26,28,26,0.12);
-    --day-glass-bg: rgba(123,176,138,0.14);
-    --day-glass-border: rgba(77,138,98,0.22);
-  }
+#splash{
+  position:fixed;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;
+  cursor:pointer;
+  opacity:1;transition:opacity 1.2s var(--ease);
+}
+#splash.gone{opacity:0;pointer-events:none;}
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+.splash-tagline{
+  display:flex;flex-direction:column;align-items:center;gap:10px;
+  opacity:0;animation:tagFade 1.6s ease 0.4s forwards;
+}
+@keyframes tagFade{to{opacity:1;}}
 
-  html, body {
-    width: 100%; height: 100%;
-    overflow: hidden;
-    -webkit-tap-highlight-color: transparent;
-    user-select: none;
-  }
+.tag-en{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-weight:300;font-size:clamp(18px,3.5vw,28px);letter-spacing:0.06em;
+}
+.tag-zh{font-weight:200;font-size:clamp(12px,1.8vw,16px);letter-spacing:0.22em;}
+.tag-th{font-weight:200;font-size:clamp(11px,1.6vw,14px);letter-spacing:0.1em;opacity:0.8;}
+body.night .tag-en{color:var(--night-white);}
+body.night .tag-zh{color:var(--night-purple-fog);}
+body.night .tag-th{color:var(--night-purple-mid);}
+body.day   .tag-en{color:var(--day-black);}
+body.day   .tag-zh{color:var(--day-green-deep);}
+body.day   .tag-th{color:var(--day-green-core);}
 
-  #splash {
-    position: fixed; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    flex-direction: column;
-    cursor: pointer;
-    transition: opacity 1.2s cubic-bezier(0.4, 0, 0.2, 1);
-  }
+.splash-div{
+  width:0.5px;height:0;margin:22px 0;
+  opacity:0;animation:divGrow 1s ease 1.8s forwards;
+}
+@keyframes divGrow{to{height:44px;opacity:1;}}
+body.night .splash-div{background:rgba(226,223,239,0.25);}
+body.day   .splash-div{background:rgba(26,28,26,0.18);}
 
-  /* ── NIGHT MODE ── */
-  .night #splash {
-    background: radial-gradient(ellipse at 30% 40%, #28263A 0%, #1C1B24 45%, #111115 100%);
-  }
+.splash-welcome{
+  font-family:'Great Vibes',cursive;
+  font-size:clamp(30px,4.5vw,50px);
+  opacity:0;animation:welcomeIn 1.4s ease 2.6s forwards;
+}
+@keyframes welcomeIn{to{opacity:0.85;}}
+body.night .splash-welcome{color:var(--night-purple-fog);}
+body.day   .splash-welcome{color:var(--day-green-deep);}
 
-  /* ── DAY MODE ── */
-  .day #splash {
-    background: radial-gradient(ellipse at 70% 60%, #E4EFE6 0%, #EDF3EE 45%, #F7F9F7 100%);
-  }
-
-  /* ── NOISE GRAIN overlay ── */
-  #splash::before {
-    content: '';
-    position: absolute; inset: 0;
-    opacity: 0.025;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-    background-size: 180px;
-    pointer-events: none;
-  }
-
-  /* ── AMBIENT GLOW ── */
-  .glow {
-    position: absolute;
-    border-radius: 50%;
-    filter: blur(90px);
-    opacity: 0;
-    transition: opacity 1.8s ease;
-    pointer-events: none;
-  }
-  .night .glow-1 {
-    width: 500px; height: 500px;
-    top: -100px; left: -80px;
-    background: radial-gradient(circle, rgba(74,63,114,0.4) 0%, transparent 70%);
-  }
-  .night .glow-2 {
-    width: 400px; height: 400px;
-    bottom: -80px; right: -60px;
-    background: radial-gradient(circle, rgba(122,110,168,0.25) 0%, transparent 70%);
-  }
-  .day .glow-1 {
-    width: 500px; height: 500px;
-    top: -80px; right: -100px;
-    background: radial-gradient(circle, rgba(123,176,138,0.35) 0%, transparent 70%);
-  }
-  .day .glow-2 {
-    width: 350px; height: 350px;
-    bottom: -60px; left: -80px;
-    background: radial-gradient(circle, rgba(139,38,53,0.12) 0%, transparent 70%);
-  }
-  .phase-1 .glow { opacity: 1; }
-
-  /* ── CENTER CONTENT ── */
-  .center-wrap {
-    position: relative;
-    display: flex; flex-direction: column;
-    align-items: center; gap: 0;
-    z-index: 10;
-  }
-
-  /* tagline */
-  .tagline {
-    display: flex; flex-direction: column;
-    align-items: center; gap: 10px;
-    opacity: 0;
-    transition: opacity 1.4s ease;
-  }
-  .phase-0 .tagline { opacity: 0.18; }
-  .phase-1 .tagline { opacity: 1; }
-  .phase-2 .tagline { opacity: 0; }
-
-  .tagline-en {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-weight: 300;
-    font-size: clamp(18px, 3.5vw, 28px);
-    letter-spacing: 0.06em;
-  }
-  .tagline-zh {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 100;
-    font-size: clamp(13px, 2vw, 17px);
-    letter-spacing: 0.22em;
-  }
-  .tagline-th {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 100;
-    font-size: clamp(12px, 1.8vw, 15px);
-    letter-spacing: 0.1em;
-    opacity: 0.7;
-  }
-  .night .tagline-en { color: var(--night-white); }
-  .night .tagline-zh { color: var(--night-purple-fog); }
-  .night .tagline-th { color: var(--night-purple-mid); }
-  .day .tagline-en { color: var(--day-black); }
-  .day .tagline-zh { color: var(--day-green-deep); }
-  .day .tagline-th { color: var(--day-green-core); }
-
-  /* divider line */
-  .tag-line-div {
-    width: 1px; height: 0px;
-    margin: 18px 0;
-    transition: height 1.2s cubic-bezier(0.4,0,0.2,1);
-  }
-  .night .tag-line-div { background: var(--night-line); }
-  .day .tag-line-div { background: var(--day-line); }
-  .phase-1 .tag-line-div { height: 48px; }
-
-  /* CP name */
-  .cp-name {
-    font-family: 'Outfit', sans-serif;
-    font-weight: 100;
-    font-size: clamp(10px, 1.4vw, 13px);
-    letter-spacing: 0.45em;
-    text-transform: uppercase;
-    opacity: 0;
-    transition: opacity 1.2s ease 0.3s;
-  }
-  .night .cp-name { color: var(--night-purple-fog); }
-  .day .cp-name { color: var(--day-green-core); }
-  .phase-1 .cp-name, .phase-2 .cp-name { opacity: 1; }
-
-  /* GLASS HALO around tagline */
-  .glass-halo {
-    position: absolute;
-    width: 420px; height: 220px;
-    border-radius: 50%;
-    opacity: 0;
-    transition: opacity 1.6s ease;
-    pointer-events: none;
-    top: 50%; left: 50%;
-    transform: translate(-50%,-50%);
-  }
-  .night .glass-halo {
-    background: radial-gradient(ellipse, rgba(74,63,114,0.22) 0%, transparent 70%);
-    box-shadow: 0 0 80px rgba(122,110,168,0.15);
-  }
-  .day .glass-halo {
-    background: radial-gradient(ellipse, rgba(123,176,138,0.18) 0%, transparent 70%);
-    box-shadow: 0 0 80px rgba(77,138,98,0.1);
-  }
-  .phase-1 .glass-halo { opacity: 1; }
-
-  /* ENTER — fullscreen hotzone, button is purely visual hint */
-  .enter-wrap {
-    margin-top: 56px;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 1.4s ease, transform 1.4s ease;
-    pointer-events: none;
-  }
-  .enter-wrap.ready {
-    opacity: 1;
-    transform: translateY(0);
-  }
-  .phase-2 .enter-wrap { opacity: 0 !important; }
-
-  .enter-btn {
-    background: none;
-    border: none;
-    cursor: default;
-    padding: 0;
-    font-family: 'Great Vibes', cursive;
-    font-size: clamp(28px, 4.5vw, 48px);
-    pointer-events: none;
-    animation: welcomeBreathe 3.5s ease-in-out infinite;
-  }
-  .night .enter-btn { color: var(--night-purple-fog); }
-  .day .enter-btn { color: var(--day-green-deep); }
-
-  @keyframes welcomeBreathe {
-    0%, 100% { opacity: 0.55; }
-    50% { opacity: 1; }
-  }
-
-  /* CLICK HINT */
-  .click-hint {
-    position: absolute;
-    bottom: 48px;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 100;
-    font-size: 10px;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    opacity: 0;
-    animation: breathe 2.8s ease-in-out infinite;
-    transition: opacity 1s ease;
-  }
-  .phase-0 .click-hint { opacity: 1; }
-  .night .click-hint { color: rgba(226,223,239,0.3); }
-  .day .click-hint { color: rgba(26,28,26,0.25); }
-
-  @keyframes breathe {
-    0%, 100% { opacity: 0.3; }
-    50% { opacity: 0.7; }
-  }
-
-  /* AUDIO STATUS — mobile */
-  .audio-hint {
-    position: absolute;
-    bottom: 80px;
-    display: flex; align-items: center; gap: 8px;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 100;
-    font-size: 10px;
-    letter-spacing: 0.3em;
-    text-transform: uppercase;
-    opacity: 0;
-    transition: opacity 0.8s ease;
-  }
-  .audio-hint.visible { opacity: 1; }
-  .night .audio-hint { color: var(--night-purple-fog); }
-  .day .audio-hint { color: var(--day-green-core); }
-  .audio-dot {
-    width: 5px; height: 5px; border-radius: 50%;
-    animation: pulse-dot 1.4s ease-in-out infinite;
-  }
-  .night .audio-dot { background: var(--night-purple-mid); }
-  .day .audio-dot { background: var(--day-green-core); }
-  @keyframes pulse-dot {
-    0%, 100% { transform: scale(1); opacity: 0.6; }
-    50% { transform: scale(1.5); opacity: 1; }
-  }
-
-  /* THEME BADGE top-right */
-  .theme-badge {
-    position: absolute;
-    top: 28px; right: 32px;
-    font-family: 'Outfit', sans-serif;
-    font-weight: 100;
-    font-size: 10px;
-    letter-spacing: 0.35em;
-    text-transform: uppercase;
-    opacity: 0.35;
-  }
-  .night .theme-badge { color: var(--night-purple-fog); }
-  .day .theme-badge { color: var(--day-green-deep); }
-
-  /* INK TRANSITION OVERLAY */
-  #ink-overlay {
-    position: fixed; inset: 0;
-    z-index: 100;
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.1s;
-  }
-  .night #ink-overlay { background: #111115; }
-  .day #ink-overlay { background: #F7F9F7; }
-  #ink-overlay.fade-out {
-    animation: inkFade 1.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
-  }
-  @keyframes inkFade {
-    0% { opacity: 1; }
-    100% { opacity: 0; }
-  }
-
-  /* MAIN CONTENT (placeholder) */
-  #main {
-    position: fixed; inset: 0;
-    display: flex; align-items: center; justify-content: center;
-    opacity: 0;
-    transition: opacity 1.4s ease 0.6s;
-    pointer-events: none;
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 18px;
-    letter-spacing: 0.1em;
-  }
-  #main.visible { opacity: 1; pointer-events: auto; }
-  .night #main { background: var(--night-bg-0); color: var(--night-white); }
-  .day #main { background: var(--day-bg-0); color: var(--day-black); }
-
-  /* MOBILE specific */
-  @media (max-width: 640px) {
-    .enter-btn { padding: 16px 28px; }
-    .tagline-en { font-size: 22px; }
-    .glass-halo { width: 300px; height: 160px; }
-  }
+.splash-hint{
+  position:absolute;bottom:44px;
+  font-size:9px;font-weight:200;letter-spacing:0.4em;text-transform:uppercase;
+  opacity:0;animation:hintPulse 2.5s ease 3.8s infinite;
+  pointer-events:none;
+}
+@keyframes hintPulse{0%{opacity:0;}30%{opacity:0.6;}70%{opacity:0.6;}100%{opacity:0;}}
+body.night .splash-hint{color:var(--night-purple-fog);}
+body.day   .splash-hint{color:var(--day-green-core);}
 </style>
 </head>
 <body>
-
-<div id="ink-overlay"></div>
-
-<div id="splash">
-  <div class="glow glow-1"></div>
-  <div class="glow glow-2"></div>
-
-  <div class="theme-badge" id="themeBadge"></div>
-
-  <div class="center-wrap">
-    <div class="glass-halo"></div>
-
-    <div class="tagline" id="tagline">
-      <span class="tagline-en">You're special.</span>
-      <span class="tagline-zh">你是最特别的。</span>
-      <span class="tagline-th">คุณคือคนพิเศษที่สุด</span>
-    </div>
-
-    <div class="tag-line-div"></div>
-    <div class="cp-name">JossGawin</div>
-
-    <div class="enter-wrap" id="enterWrap">
-      <div class="enter-btn">Welcome Home</div>
-    </div>
+<div id="splash" onclick="enter()">
+  <div class="splash-tagline">
+    <span class="tag-en">You're special.</span>
+    <span class="tag-zh">你是最特别的。</span>
+    <span class="tag-th">เธอคือคนพิเศษที่สุด</span>
   </div>
-
-  <div class="click-hint" id="clickHint">touch anywhere</div>
-  <div class="audio-hint" id="audioHint">
-    <span class="audio-dot"></span>
-    <span id="audioHintText">playing</span>
-  </div>
+  <div class="splash-div"></div>
+  <div class="splash-welcome">Welcome Home</div>
+  <div class="splash-hint">tap anywhere</div>
 </div>
-
-<div id="main">
-  — 主页内容即将呈现 —
-</div>
-
 <script>
-  // ── THEME DETECTION ──
-  const hour = new Date().getHours();
-  const isNight = hour >= 18 || hour < 6;
-  const body = document.body;
-  body.classList.add(isNight ? 'night' : 'day');
-  document.getElementById('themeBadge').textContent = isNight ? 'Joss 🐻 Night' : 'Gawin 🐧 Day';
+const hr = new Date().getHours();
+document.body.classList.add(hr >= 18 || hr < 6 ? 'night' : 'day');
 
-  // ── STATE ──
-  let phase = 0;
-  let audioCtx = null;
-  let chugSource = null;
-  let chorusSource = null;
-  let isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-
-  const splash = document.getElementById('splash');
-  const inkOverlay = document.getElementById('ink-overlay');
-  const mainPage = document.getElementById('main');
-  const audioHint = document.getElementById('audioHint');
-  const audioHintText = document.getElementById('audioHintText');
-
-// ── AUDIO ENGINE (真实音频驱动) ──
-
-// 📥 1. 这里已经更新为你最新的长版音频路径
-const AUDIO_VOCAL = 'asset/music/speical - creep.mp3';    // 第一阶段：人声清唱
-const AUDIO_CHUG  = 'asset/music/闷音 - creep.mp3';      // 第一阶段接棒：闷音循环
-const AUDIO_SWELL = 'asset/music/长版creep - creep.mp3'; // 第二阶段进站：最新的长版音乐
-
-let audio1 = null; 
-let audio2 = null; 
-let audio3 = null; // 专门用来控制长版音乐的句柄
-
-// 播放人声（第一次点击瞬间触发）
-function playVocalSpecial() {
-  audio2 = new Audio(AUDIO_VOCAL);
-  audio2.play();
+function enter(){
+  document.getElementById('splash').classList.add('gone');
+  setTimeout(() => { window.location.href = 'index.html'; }, 1000);
 }
-
-// 播放闷音（人声唱完了接棒触发）
-function playChugLoop() {
-  if (audio1) return;
-  audio1 = new Audio(AUDIO_CHUG);
-  audio1.loop = true; 
-  audio1.volume = 0.5; 
-  audio1.play();
-}
-
-// 📥 2. 核心逻辑：完全由代码控制的“长版音乐渐弱引擎”
-function playChorusSwell(onFadeStart) {
-  // 瞬间掐断前面正在播放的人声和闷音，干脆利落
-  if (audio2) { try { audio2.pause(); } catch(e){} }
-  if (audio1) { try { audio1.pause(); } catch(e){} }
-
-  // 载入你的长版 Creep
-  audio3 = new Audio(AUDIO_SWELL);
-  audio3.volume = 0.8; // 【初始音量】：一进站瞬间拉高到 80%，完成高潮爆破
-  audio3.play();
-
-  // ⏳ 【第一步：高潮维持】
-  // 使用 setTimeout 定时器，让这首长版音乐完完整整、大声播放 3000 毫秒（3秒）
-  setTimeout(() => {
-    if (onFadeStart) onFadeStart(); // 触发主页墨迹动画的后半段视觉
-    
-    // ⏳ 【第二步：代码接管，开启丝滑渐弱】
-    // 设立一个每 100 毫秒（0.1秒）就执行一次的数字调音台
-    let fadeInterval = setInterval(() => {
-      
-      // 如果当前的音量还大于 0.02（还没完全静音）
-      if (audio3.volume > 0.02) {
-        
-        // 【控制行】：每次触发，代码自动把音量往下滑扣除 0.02
-        // 这个数值越小，声音减弱得越慢、越细腻；数值越大，减弱得越快
-        audio3.volume -= 0.02; 
-        
-        // 打印调试日志，你可以在浏览器 F12 看到音量像下楼梯一样下滑
-        console.log("代码正在执行渐弱，当前音量：", audio3.volume.toFixed(2));
-        
-      } else {
-        // ⏳ 【第三步：彻底静音，安全关机】
-        // 当音量已经扣到接近 0 了，由代码强制清零并暂停播放，防止后台偷跑流量
-        audio3.volume = 0;
-        audio3.pause();
-        
-        clearInterval(fadeInterval); // 销毁这个减弱定时器，释放内存
-        console.log("长版音乐已由代码完美执行渐弱并安全静音。");
-      }
-      
-    }, 100); // ← 每 100 毫秒（0.1秒）执行一次下滑扣分贝
-    
-  }, 3000); // ← 3000 毫秒（3秒）代表歌声轰鸣 3 秒后才开始衰减，你可以自由调整这个等待时间
-}
-
-// 保持空函数防止老代码其他角落报错
-function initAudio() {}
-function stopChug() {}
-
-  // ── PHASE 0 → 1: first touch ──
-function handleFirstTouch(e) {
-  if (phase !== 0) return;
-  phase = 1;
-
-  splash.removeEventListener('click', handleFirstTouch);
-  splash.removeEventListener('touchstart', handleFirstTouch);
-
-  // ➔ 第一次点击：立刻响起纯人声清唱
-  playVocalSpecial();
-  showAudioHint('\u266a playing');
-
-  splash.classList.remove('phase-0');
-  splash.classList.add('phase-1');
-  document.getElementById('clickHint').style.opacity = '0';
-
-  // ➔ 核心卡点：人声唱完了，才会出现闷音
-  // ⚠️ 请把下面的 3500 (3.5秒) 改成你那段 "speical - creep.mp3" 唱完的精准时长
-  setTimeout(() => {
-    document.getElementById('enterWrap').classList.add('ready');
-    
-    playChugLoop(); // 闷音吉他现在正式接棒，开始背景暗涌循环
-
-    // 允许第二次点击，触发进入主站
-    splash.addEventListener('click', handleEnter);
-    splash.addEventListener('touchstart', handleEnter, { passive: true });
-  }, 3500); 
-}
-
-  function showAudioHint(msg) {
-    audioHintText.textContent = msg;
-    audioHint.classList.add('visible');
-    setTimeout(() => audioHint.classList.remove('visible'), 2200);
-  }
-
-  // ── PHASE 1 → 2: fullscreen second touch ──
-  function handleEnter(e) {
-    if (phase !== 1) return;
-    phase = 2;
-
-    // audio: stop chug → chorus swell
-    playChorusSwell(() => {
-      // murmur fade = "but I'm a creep"
-    });
-    showAudioHint('♪ entering');
-
-    // visual: fade out splash, fade in main
-    splash.classList.add('phase-2');
-
-    setTimeout(() => {
-      // ink fade overlay
-      inkOverlay.style.opacity = '1';
-      inkOverlay.classList.add('fade-out');
-
-      setTimeout(() => {
-        window.location.href = './pages/';
-      }, 400);
-    }, 600);
-  }
-
-  // ── INIT ──
-  splash.classList.add('phase-0');
-
-  // Bind first-touch
-  splash.addEventListener('click', handleFirstTouch);
-  splash.addEventListener('touchstart', handleFirstTouch, { passive: true });
-
-  // Mobile: iOS audio needs explicit gesture, show hint
-  if (isIOS) {
-    const iosHint = document.createElement('div');
-    iosHint.style.cssText = `
-      position:absolute; bottom:120px; left:50%; transform:translateX(-50%);
-      font-family:'Outfit',sans-serif; font-weight:100; font-size:9px;
-      letter-spacing:0.3em; text-transform:uppercase; text-align:center;
-      opacity:0.35; white-space:nowrap;
-      color:${isNight ? 'var(--night-purple-fog)' : 'var(--day-green-core)'};
-    `;
-    iosHint.textContent = 'tap to enable audio';
-    splash.appendChild(iosHint);
-  }
 </script>
 </body>
 </html>
