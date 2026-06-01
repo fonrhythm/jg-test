@@ -825,7 +825,16 @@ function closeMenu(){
   document.getElementById('navDrop').classList.remove('open');
 }
 document.addEventListener('click', e=>{
-  if(menuOpen && !e.target.closest('#nav') && !e.target.closest('#navDrop')) closeMenu();
+  if(!menuOpen) return;
+  // close if clicked outside nav and dropdown
+  if(!e.target.closest('#nav') && !e.target.closest('#navDrop')){
+    closeMenu();
+    return;
+  }
+  // close if clicked a link inside dropdown (allow navigation to proceed naturally)
+  if(e.target.closest('#navDrop') && e.target.tagName === 'A'){
+    closeMenu();
+  }
 });
 
 // ── INTERSECTION OBSERVER ──
