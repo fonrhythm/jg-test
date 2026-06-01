@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gallery — JossGawin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Outfit:wght@100;200;300;400&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+/* ── TOKENS (mirrored from index) ── */
+:root{
+  --night-bg-0:#111115;--night-bg-1:#1C1B24;--night-bg-2:#28263A;
+  --night-purple-core:#4A3F72;--night-purple-mid:#7A6EA8;
+  --night-purple-fog:#B8B0D4;--night-white:#E2DFEF;
+  --night-line:rgba(226,223,239,0.13);
+  --day-bg-0:#F7F9F7;--day-bg-1:#EDF3EE;--day-bg-2:#E4EFE6;
+  --day-green-core:#7BB08A;--day-green-deep:#4D8A62;
+  --day-green-fog:#B8D9C2;--day-crimson:#8B2635;
+  --day-black:#1A1C1A;--day-line:rgba(26,28,26,0.11);
+  --ease:cubic-bezier(0.4,0,0.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Outfit',sans-serif;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+  transition:background 0.8s var(--ease),color 0.8s var(--ease);
+  opacity:0;animation:pageIn 0.8s ease 0.05s forwards;
+}
+@keyframes pageIn{to{opacity:1;}}
+body.night{background:var(--night-bg-0);color:var(--night-white);}
+body.day  {background:var(--day-bg-0);color:var(--day-black);}
+
+/* ── NAV ── */
+#nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  display:grid;grid-template-columns:auto 1fr auto;
+  align-items:center;padding:0 40px;height:60px;
+  transition:backdrop-filter 0.4s,background 0.4s;
+}
+#nav.scrolled{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+body.night #nav.scrolled{background:rgba(17,17,21,0.78);border-bottom:0.5px solid var(--night-line);}
+body.day   #nav.scrolled{background:rgba(247,249,247,0.78);border-bottom:0.5px solid var(--day-line);}
+
+.nav-logo{
+  grid-column:1;font-family:'Great Vibes',cursive;font-size:22px;
+  letter-spacing:0.04em;text-decoration:none;
+}
+body.night .nav-logo{color:var(--night-purple-fog);}
+body.day   .nav-logo{color:var(--day-green-deep);}
+
+.nav-links{
+  grid-column:2;display:flex;gap:24px;list-style:none;
+  justify-content:center;align-items:center;overflow:hidden;
+}
+.nav-links a{
+  font-weight:200;font-size:10px;letter-spacing:0.28em;
+  text-transform:uppercase;text-decoration:none;
+  opacity:0.7;transition:opacity 0.25s;white-space:nowrap;
+}
+.nav-links a:hover{opacity:1;}
+.nav-links a.active{opacity:1;}
+body.night .nav-links a{color:var(--night-white);}
+body.day   .nav-links a{color:var(--day-black);}
+
+.nav-right{
+  grid-column:3;display:flex;align-items:flex-end;
+  flex-direction:column;gap:5px;flex-shrink:0;
+}
+.nav-right-wide{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+.lang-switch{display:flex;align-items:center;gap:12px;}
+.lang-btn{
+  background:none;border:none;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-weight:200;font-size:10px;
+  letter-spacing:0.25em;opacity:0.45;transition:opacity 0.25s;padding:0;line-height:1;
+}
+.lang-btn.active{opacity:1;}
+.lang-btn:hover{opacity:0.8;}
+body.night .lang-btn{color:var(--night-white);}
+body.day   .lang-btn{color:var(--day-black);}
+.theme-toggle{
+  background:none;border:none;cursor:pointer;
+  width:34px;height:20px;position:relative;flex-shrink:0;
+}
+.toggle-track{position:absolute;inset:3px 0;border-radius:10px;transition:background 0.5s;}
+body.night .toggle-track{background:rgba(184,176,212,0.25);border:0.5px solid rgba(184,176,212,0.3);}
+body.day   .toggle-track{background:rgba(77,138,98,0.2);border:0.5px solid rgba(77,138,98,0.3);}
+.toggle-dot{position:absolute;top:1px;width:12px;height:12px;border-radius:50%;transition:left 0.4s var(--ease),background 0.4s;}
+body.night .toggle-dot{left:2px;background:var(--night-purple-fog);}
+body.day   .toggle-dot{left:20px;background:var(--day-green-core);}
+
+.nav-ham-group{display:none;flex-direction:column;align-items:flex-end;gap:5px;}
+.nav-ham-top{display:flex;align-items:center;gap:10px;}
+.nav-hamburger{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:4px;opacity:0.7;transition:opacity 0.25s;}
+.ham-line{width:22px;height:0.5px;display:block;transition:transform 0.35s var(--ease),opacity 0.35s,width 0.35s;}
+body.night .ham-line{background:var(--night-white);}
+body.day   .ham-line{background:var(--day-black);}
+.nav-hamburger.open .ham-line:nth-child(1){transform:translateY(5.5px) rotate(45deg);}
+.nav-hamburger.open .ham-line:nth-child(2){opacity:0;width:0;}
+.nav-hamburger.open .ham-line:nth-child(3){transform:translateY(-5.5px) rotate(-45deg);}
+.nav-lang-mobile{display:flex;align-items:center;gap:12px;}
+.nav-dropdown{
+  position:fixed;inset:0;z-index:98;
+  display:flex;flex-direction:column;align-items:flex-end;
+  justify-content:center;padding-right:40px;gap:22px;
+  opacity:0;pointer-events:none;transition:opacity 0.35s var(--ease);
+}
+.nav-dropdown::before{content:'';position:absolute;inset:0;z-index:-1;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);}
+body.night .nav-dropdown::before{background:rgba(17,17,21,0.9);}
+body.day   .nav-dropdown::before{background:rgba(247,249,247,0.93);}
+.nav-dropdown.open{opacity:1;pointer-events:auto;}
+.nav-dropdown a{font-weight:200;font-size:14px;letter-spacing:0.3em;text-transform:uppercase;text-decoration:none;opacity:0.75;transition:opacity 0.22s;white-space:nowrap;}
+.nav-dropdown a:hover{opacity:1;}
+body.night .nav-dropdown a{color:var(--night-white);}
+body.day   .nav-dropdown a{color:var(--day-black);}
+
+@media(max-width:870px){
+  #nav{grid-template-columns:auto 1fr;padding:0 20px;}
+  .nav-links{display:none;}
+  .nav-right-wide{display:none;}
+  .nav-ham-group{display:flex;}
+}
+@media(min-width:871px){
+  .nav-ham-group{display:none !important;}
+  .nav-right-wide{display:flex;}
+}
+
+/* ── PAGE HEADER ── */
+.page-header{
+  padding:120px 48px 60px;
+  display:flex;flex-direction:column;align-items:center;gap:12px;
+}
+.page-header-eyebrow{
+  font-size:9px;font-weight:200;letter-spacing:0.55em;
+  text-transform:uppercase;opacity:0.5;
+}
+body.night .page-header-eyebrow{color:var(--night-purple-mid);}
+body.day   .page-header-eyebrow{color:var(--day-green-deep);}
+.page-header-title{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-weight:300;font-size:clamp(28px,4vw,44px);
+  letter-spacing:0.06em;opacity:0.9;
+}
+
+/* ── FILTER BAR ── */
+.filter-bar{
+  display:flex;align-items:center;justify-content:center;
+  gap:32px;padding:0 48px 52px;flex-wrap:wrap;
+}
+.filter-btn{
+  background:none;border:none;cursor:pointer;
+  font-family:'Outfit',sans-serif;font-weight:200;
+  font-size:10px;letter-spacing:0.35em;text-transform:uppercase;
+  opacity:0.4;transition:opacity 0.25s;padding:0;
+  position:relative;
+}
+.filter-btn::after{
+  content:'';position:absolute;bottom:-4px;left:0;right:0;
+  height:0.5px;transform:scaleX(0);
+  transition:transform 0.3s var(--ease);
+}
+.filter-btn.active{opacity:1;}
+.filter-btn.active::after{transform:scaleX(1);}
+.filter-btn:hover{opacity:0.8;}
+body.night .filter-btn{color:var(--night-white);}
+body.night .filter-btn::after{background:var(--night-purple-fog);}
+body.day   .filter-btn{color:var(--day-black);}
+body.day   .filter-btn::after{background:var(--day-green-deep);}
+
+/* ── MASONRY GRID ── */
+.gallery-grid{
+  columns:3 280px;
+  column-gap:16px;
+  padding:0 40px 100px;
+  max-width:1400px;
+  margin:0 auto;
+}
+@media(max-width:640px){
+  .gallery-grid{columns:2 140px;column-gap:10px;padding:0 16px 80px;}
+}
+
+/* ── CARD ── */
+.gallery-card{
+  break-inside:avoid;
+  position:relative;
+  margin-bottom:16px;
+  overflow:hidden;
+  cursor:pointer;
+  /* no border-radius — editorial flat feel */
+}
+@media(max-width:640px){
+  .gallery-card{margin-bottom:10px;}
+}
+
+.gallery-card img{
+  display:block;width:100%;height:auto;
+  transition:transform 0.65s var(--ease),filter 0.65s var(--ease);
+  filter:brightness(1) saturate(0.92);
+}
+.gallery-card:hover img{
+  transform:scale(1.04);
+  filter:brightness(0.72) saturate(0.85);
+}
+
+/* overlay — hidden until hover */
+.card-overlay{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  justify-content:space-between;
+  padding:18px 16px;
+  pointer-events:none;
+}
+
+/* top center: magazine name */
+.card-mag{
+  align-self:center;
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-weight:300;font-size:clamp(13px,1.4vw,16px);
+  letter-spacing:0.08em;color:#fff;
+  text-align:center;
+  opacity:0;transform:translateY(-6px);
+  transition:opacity 0.45s var(--ease),transform 0.45s var(--ease);
+  text-shadow:0 1px 12px rgba(0,0,0,0.5);
+}
+.gallery-card:hover .card-mag{opacity:1;transform:translateY(0);}
+
+/* bottom row */
+.card-bottom{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  gap:8px;
+}
+
+/* bottom-left: type tag */
+.card-tag{
+  font-weight:200;font-size:9px;letter-spacing:0.35em;
+  text-transform:uppercase;color:rgba(255,255,255,0.82);
+  opacity:0;transform:translateY(6px);
+  transition:opacity 0.45s var(--ease) 0.05s,transform 0.45s var(--ease) 0.05s;
+  text-shadow:0 1px 8px rgba(0,0,0,0.5);
+  white-space:nowrap;
+}
+.gallery-card:hover .card-tag{opacity:1;transform:translateY(0);}
+
+/* bottom-right: date */
+.card-date{
+  font-weight:200;font-size:9px;letter-spacing:0.2em;
+  color:rgba(255,255,255,0.7);text-align:right;
+  opacity:0;transform:translateY(6px);
+  transition:opacity 0.45s var(--ease) 0.08s,transform 0.45s var(--ease) 0.08s;
+  text-shadow:0 1px 8px rgba(0,0,0,0.5);
+  white-space:nowrap;
+}
+.gallery-card:hover .card-date{opacity:1;transform:translateY(0);}
+
+/* subtle vignette overlay that only appears on hover */
+.card-vignette{
+  position:absolute;inset:0;
+  background:linear-gradient(
+    to bottom,
+    rgba(0,0,0,0.18) 0%,
+    transparent 30%,
+    transparent 60%,
+    rgba(0,0,0,0.38) 100%
+  );
+  opacity:0;transition:opacity 0.5s var(--ease);
+  pointer-events:none;
+}
+.gallery-card:hover .card-vignette{opacity:1;}
+
+/* mobile: always show overlay at reduced opacity */
+@media(hover:none){
+  .card-mag,.card-tag,.card-date{opacity:0.85;transform:none;}
+  .card-vignette{opacity:0.7;}
+  .gallery-card img{filter:brightness(0.78) saturate(0.88);}
+}
+
+/* ── EMPTY STATE ── */
+.gallery-empty{
+  text-align:center;padding:80px 0;
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-weight:300;font-size:18px;letter-spacing:0.08em;opacity:0.3;
+}
+
+/* ── FOOTER ── */
+#footer{
+  padding:28px 48px;
+  display:flex;align-items:center;justify-content:center;
+  border-top:0.5px solid;
+}
+body.night #footer{border-color:var(--night-line);background:var(--night-bg-0);}
+body.day   #footer{border-color:var(--day-line);background:var(--day-bg-0);}
+.footer-text{
+  font-size:9px;font-weight:200;letter-spacing:0.3em;
+  text-transform:uppercase;opacity:0.45;text-align:center;
+}
+body.night .footer-text{color:var(--night-purple-fog);}
+body.day   .footer-text{color:var(--day-black);}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="../index.html">JossGawin</a>
+  <ul class="nav-links">
+    <li><a href="#" data-i18n="nav-profile">Profile</a></li>
+    <li><a href="#" data-i18n="nav-calendar">Calendar</a></li>
+    <li><a href="#" data-i18n="nav-timeline">Timeline</a></li>
+    <li><a href="#" data-i18n="nav-works">Works</a></li>
+    <li><a href="#" data-i18n="nav-fashion">Fashion</a></li>
+    <li><a href="#" data-i18n="nav-social">Social</a></li>
+    <li><a href="#" class="active" data-i18n="nav-gallery">Gallery</a></li>
+    <li><a href="#" data-i18n="nav-contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-right-wide">
+      <div class="lang-switch">
+        <button class="lang-btn" onclick="setLang('zh')">CN</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('th')">TH</button>
+      </div>
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <div class="toggle-track"><div class="toggle-dot"></div></div>
+      </button>
+    </div>
+    <div class="nav-ham-group">
+      <div class="nav-ham-top">
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+          <div class="toggle-track"><div class="toggle-dot"></div></div>
+        </button>
+        <button class="nav-hamburger" id="hamBtn" onclick="toggleMenu()" aria-label="Menu">
+          <span class="ham-line"></span>
+          <span class="ham-line"></span>
+          <span class="ham-line"></span>
+        </button>
+      </div>
+      <div class="nav-lang-mobile">
+        <button class="lang-btn" onclick="setLang('zh')">CN</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('th')">TH</button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- MOBILE DROPDOWN -->
+<div class="nav-dropdown" id="navDrop">
+  <a href="#" data-i18n="nav-profile" onclick="closeMenu()">Profile</a>
+  <a href="#" data-i18n="nav-calendar" onclick="closeMenu()">Calendar</a>
+  <a href="#" data-i18n="nav-timeline" onclick="closeMenu()">Timeline</a>
+  <a href="#" data-i18n="nav-works" onclick="closeMenu()">Works</a>
+  <a href="#" data-i18n="nav-fashion" onclick="closeMenu()">Fashion</a>
+  <a href="#" data-i18n="nav-social" onclick="closeMenu()">Social</a>
+  <a href="#" data-i18n="nav-gallery" onclick="closeMenu()">Gallery</a>
+  <a href="#" data-i18n="nav-contact" onclick="closeMenu()">Contact</a>
+</div>
+
+<!-- PAGE HEADER -->
+<header class="page-header">
+  <div class="page-header-eyebrow" data-i18n="gallery-eyebrow">Magazine</div>
+  <div class="page-header-title" data-i18n="gallery-title">Gallery</div>
+</header>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <button class="filter-btn active" data-filter="all" onclick="applyFilter('all')" data-i18n="filter-all">All</button>
+  <button class="filter-btn" data-filter="duo" onclick="applyFilter('duo')" data-i18n="filter-duo">Duo</button>
+  <button class="filter-btn" data-filter="solo" onclick="applyFilter('solo')" data-i18n="filter-solo">Solo</button>
+</div>
+
+<!-- GALLERY GRID -->
+<main class="gallery-grid" id="galleryGrid"></main>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <p class="footer-text">Copyright © 2026 — All rights reserved by SomenStjerne</p>
+</footer>
+
+<script>
+// ── THEME ──
+const hr = new Date().getHours();
+let isNight = hr >= 18 || hr < 6;
+document.body.classList.add(isNight ? 'night' : 'day');
+function toggleTheme(){
+  isNight = !isNight;
+  document.body.classList.toggle('night', isNight);
+  document.body.classList.toggle('day', !isNight);
+}
+
+// ── LANG ──
+const sys = (navigator.language || 'en').toLowerCase();
+let lang = sys.startsWith('zh')||sys.startsWith('cmn')||sys.startsWith('yue') ? 'zh'
+         : sys.startsWith('th') ? 'th' : 'en';
+
+const T = {
+  zh:{
+    'nav-profile':'简介','nav-calendar':'行程','nav-timeline':'时间轴',
+    'nav-works':'作品','nav-fashion':'时尚','nav-social':'动态',
+    'nav-gallery':'画廊','nav-contact':'联系',
+    'gallery-eyebrow':'杂志','gallery-title':'画廊',
+    'filter-all':'全部','filter-duo':'双人','filter-solo':'单人',
+    'type-duo':'双人','type-solo':'单人',
+  },
+  en:{
+    'nav-profile':'Profile','nav-calendar':'Calendar','nav-timeline':'Timeline',
+    'nav-works':'Works','nav-fashion':'Fashion','nav-social':'Social',
+    'nav-gallery':'Gallery','nav-contact':'Contact',
+    'gallery-eyebrow':'Magazine','gallery-title':'Gallery',
+    'filter-all':'All','filter-duo':'Duo','filter-solo':'Solo',
+    'type-duo':'Duo','type-solo':'Solo',
+  },
+  th:{
+    'nav-profile':'โปรไฟล์','nav-calendar':'ตารางงาน','nav-timeline':'ไทม์ไลน์',
+    'nav-works':'ผลงาน','nav-fashion':'แฟชั่น','nav-social':'โซเชียล',
+    'nav-gallery':'แกลเลอรี่','nav-contact':'ติดต่อ',
+    'gallery-eyebrow':'นิตยสาร','gallery-title':'แกลเลอรี่',
+    'filter-all':'ทั้งหมด','filter-duo':'คู่','filter-solo':'เดี่ยว',
+    'type-duo':'คู่','type-solo':'เดี่ยว',
+  }
+};
+
+function t(key){ return T[lang]?.[key] || T['en'][key] || key; }
+
+function setLang(l){
+  lang = l;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const v = T[l]?.[el.dataset.i18n];
+    if(v) el.textContent = v;
+  });
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    const m={'CN':'zh','EN':'en','TH':'th'};
+    b.classList.toggle('active', m[b.textContent]===l);
+  });
+  // re-render cards so hover labels update
+  renderCards(currentFilter);
+}
+setLang(lang);
+
+// ── HAMBURGER ──
+let menuOpen = false;
+function toggleMenu(){
+  menuOpen = !menuOpen;
+  document.getElementById('hamBtn').classList.toggle('open', menuOpen);
+  document.getElementById('navDrop').classList.toggle('open', menuOpen);
+}
+function closeMenu(){
+  menuOpen = false;
+  document.getElementById('hamBtn')?.classList.remove('open');
+  document.getElementById('navDrop').classList.remove('open');
+}
+document.addEventListener('click', e=>{
+  if(menuOpen && !e.target.closest('#nav') && !e.target.closest('#navDrop')) closeMenu();
+});
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 10);
+},{passive:true});
+
+// ══════════════════════════════════════════════
+//  DATA — add new entries here, UI auto-updates
+// ══════════════════════════════════════════════
+const GALLERY_DATA = [
+  {
+    // type: 'duo' | 'solo'
+    type: 'duo',
+    img: 'https://lofficielthailand.com/wp-content/uploads/2025/04/%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%A5%E0%B8%B2%E0%B8%A2%E0%B8%99%E0%B9%89%E0%B8%B3COOL-GUY_JOSS-KAWIN-11-1638x2048.jpg',
+    url: 'https://lofficielthailand.com/2025/04/lofficiel-cool-guy-the-young-blood-joss-gawin/',
+    date: 'April 1, 2025',
+    mag:  { zh:"L'Officiel 泰国", en:"L'Officiel Thailand", th:"L'Officiel Thailand" },
+    tag:  { zh:'双人', en:'Duo', th:'คู่' },
+  },
+  {
+    type: 'duo',
+    img: 'https://ellementhailand.com/wp-content/uploads/2025/03/S__87670791_0-1229x1536.png',
+    url: 'https://ellementhailand.com/elle-men-voices-march-2025-joss-gawin/',
+    date: 'March 17, 2025',
+    mag:  { zh:'Elle Men 泰国', en:'Elle Men Thailand', th:'Elle Men Thailand' },
+    tag:  { zh:'双人', en:'Duo', th:'คู่' },
+  },
+  // ── add more entries below in the same format ──
+];
+
+// ── RENDER ──
+let currentFilter = 'all';
+
+function renderCards(filter){
+  currentFilter = filter;
+  const grid = document.getElementById('galleryGrid');
+  const data = filter === 'all'
+    ? GALLERY_DATA
+    : GALLERY_DATA.filter(d => d.type === filter);
+
+  if(data.length === 0){
+    grid.innerHTML = `<div class="gallery-empty">${t('filter-all')} — 0</div>`;
+    return;
+  }
+
+  grid.innerHTML = data.map(d => `
+    <div class="gallery-card" onclick="window.open('${d.url}','_blank')">
+      <img
+        src="${d.img}"
+        alt="${d.mag[lang] || d.mag.en}"
+        loading="lazy"
+      >
+      <div class="card-vignette"></div>
+      <div class="card-overlay">
+        <div class="card-mag">${d.mag[lang] || d.mag.en}</div>
+        <div class="card-bottom">
+          <div class="card-tag">${d.tag[lang] || d.tag.en}</div>
+          <div class="card-date">${d.date}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ── FILTER ──
+function applyFilter(filter){
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b=>{
+    b.classList.toggle('active', b.dataset.filter === filter);
+  });
+  renderCards(filter);
+}
+
+// init
+renderCards('all');
+</script>
+</body>
+</html>
