@@ -28,6 +28,7 @@ body.day  {background:radial-gradient(ellipse at 70% 60%,#E4EFE6 0%,#EDF3EE 45%,
   position:fixed;inset:0;
   display:flex;align-items:center;justify-content:center;
   flex-direction:column;
+  text-align:center;
   cursor:pointer;
   opacity:1;transition:opacity 1.2s var(--ease);
 }
@@ -35,6 +36,7 @@ body.day  {background:radial-gradient(ellipse at 70% 60%,#E4EFE6 0%,#EDF3EE 45%,
 
 .splash-tagline{
   display:flex;flex-direction:column;align-items:center;gap:10px;
+  text-align:center;
   opacity:0;animation:tagFade 1.6s ease 0.4s forwards;
 }
 @keyframes tagFade{to{opacity:1;}}
@@ -84,7 +86,7 @@ body.day   .splash-hint{color:var(--day-green-core);}
 <div id="splash" onclick="enter()">
   <div class="splash-tagline">
     <span class="tag-en">You're special.</span>
-    <span class="tag-zh">你是最特别的。</span>
+    <span class="tag-zh">你是最特别的</span>
     <span class="tag-th">คุณคือคนพิเศษที่สุด</span>
   </div>
   <div class="splash-div"></div>
