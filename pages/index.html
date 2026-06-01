@@ -250,7 +250,7 @@ body.day   .social-name{color:var(--day-black);}
 
 /* hero cp name */
 .hero-cp{
-  position:absolute;bottom:80px;
+  position:absolute;bottom:22vh;
   left:0;right:0;
   text-align:center;
   font-family:'Great Vibes',cursive;font-size:clamp(32px,5vw,54px);
@@ -262,7 +262,7 @@ body.day   .hero-cp{color:var(--day-green-deep);}
 
 /* scroll hint */
 .scroll-hint{
-  position:absolute;bottom:30px;
+  position:absolute;bottom:14vh;
   left:0;right:0;
   display:flex;flex-direction:column;align-items:center;gap:7px;
   pointer-events:none;
@@ -381,6 +381,10 @@ body.day   .btm-label{color:var(--day-black);}
 .split-col{flex:1;display:flex;flex-direction:column;}
 .joss-col {align-items:flex-end;padding-right:52px;}
 .gawin-col{align-items:flex-start;padding-left:52px;}
+
+/* origin nodes pushed further apart */
+.joss-col  .origin-si{ transform:translateX(-32px); }
+.gawin-col .origin-si{ transform:translateX(32px); }
 
 .joss-col  .tnode-si:nth-child(1){--sx:-24px;}
 .joss-col  .tnode-si:nth-child(2){--sx:10px;}
