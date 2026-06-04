@@ -1,0 +1,1041 @@
+cat > /mnt/user-data/outputs/profile-joss.html << 'HTMLEOF'
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joss — Profile · JossGawin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=Outfit:wght@100;200;300;400&family=Great+Vibes&display=swap" rel="stylesheet">
+<style>
+:root{
+  --night-bg-0:#111115;--night-bg-1:#1C1B24;--night-bg-2:#28263A;
+  --night-purple-core:#4A3F72;--night-purple-mid:#7A6EA8;
+  --night-purple-fog:#B8B0D4;--night-white:#E2DFEF;
+  --night-line:rgba(226,223,239,0.10);
+  --day-bg-0:#F7F9F7;--day-bg-1:#EDF3EE;--day-bg-2:#E4EFE6;
+  --day-green-core:#7BB08A;--day-green-deep:#4D8A62;
+  --day-black:#1A1C1A;--day-line:rgba(26,28,26,0.08);
+  --ease:cubic-bezier(0.4,0,0.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Outfit',sans-serif;overflow-x:hidden;
+  -webkit-tap-highlight-color:transparent;
+  transition:background 0.8s var(--ease),color 0.8s var(--ease);
+  opacity:0;animation:pageIn 0.8s ease 0.05s forwards;
+}
+@keyframes pageIn{to{opacity:1;}}
+body.night{background:var(--night-bg-0);color:var(--night-white);}
+body.day  {background:var(--day-bg-0);color:var(--day-black);}
+
+/* ── NAV ── */
+#nav{position:fixed;top:0;left:0;right:0;z-index:100;display:grid;grid-template-columns:auto 1fr auto;align-items:center;padding:0 40px;height:60px;transition:backdrop-filter 0.4s,background 0.4s;}
+#nav.scrolled{backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);}
+body.night #nav.scrolled{background:rgba(17,17,21,0.78);border-bottom:0.5px solid var(--night-line);}
+body.day   #nav.scrolled{background:rgba(247,249,247,0.78);border-bottom:0.5px solid var(--day-line);}
+.nav-logo{grid-column:1;font-family:'Great Vibes',cursive;font-size:22px;letter-spacing:0.04em;text-decoration:none;}
+body.night .nav-logo{color:var(--night-purple-fog);}
+body.day   .nav-logo{color:var(--day-green-deep);}
+.nav-links{grid-column:2;display:flex;gap:24px;list-style:none;justify-content:center;overflow:hidden;}
+.nav-links a{font-weight:200;font-size:10px;letter-spacing:0.28em;text-transform:uppercase;text-decoration:none;opacity:0.7;transition:opacity 0.25s;white-space:nowrap;}
+.nav-links a:hover,.nav-links a.active{opacity:1;}
+body.night .nav-links a{color:var(--night-white);}
+body.day   .nav-links a{color:var(--day-black);}
+.nav-right{grid-column:3;display:flex;align-items:flex-end;flex-direction:column;gap:5px;flex-shrink:0;}
+.nav-right-wide{display:flex;flex-direction:column;align-items:flex-end;gap:5px;}
+.lang-switch{display:flex;align-items:center;gap:12px;}
+.lang-btn{background:none;border:none;cursor:pointer;font-family:'Outfit',sans-serif;font-weight:200;font-size:10px;letter-spacing:0.25em;opacity:0.45;transition:opacity 0.25s;padding:0;line-height:1;}
+.lang-btn.active{opacity:1;}.lang-btn:hover{opacity:0.8;}
+body.night .lang-btn{color:var(--night-white);}
+body.day   .lang-btn{color:var(--day-black);}
+.theme-toggle{background:none;border:none;cursor:pointer;width:34px;height:20px;position:relative;flex-shrink:0;}
+.toggle-track{position:absolute;inset:3px 0;border-radius:10px;transition:background 0.5s;}
+body.night .toggle-track{background:rgba(184,176,212,0.25);border:0.5px solid rgba(184,176,212,0.3);}
+body.day   .toggle-track{background:rgba(77,138,98,0.2);border:0.5px solid rgba(77,138,98,0.3);}
+.toggle-dot{position:absolute;top:1px;width:12px;height:12px;border-radius:50%;transition:left 0.4s var(--ease),background 0.4s;}
+body.night .toggle-dot{left:2px;background:var(--night-purple-fog);}
+body.day   .toggle-dot{left:20px;background:var(--day-green-core);}
+.nav-ham-group{display:none;flex-direction:column;align-items:flex-end;gap:5px;}
+.nav-ham-top{display:flex;align-items:center;gap:10px;}
+.nav-hamburger{background:none;border:none;cursor:pointer;display:flex;flex-direction:column;gap:5px;padding:4px;opacity:0.7;}
+.ham-line{width:22px;height:0.5px;display:block;transition:transform 0.35s var(--ease),opacity 0.35s,width 0.35s;}
+body.night .ham-line{background:var(--night-white);}
+body.day   .ham-line{background:var(--day-black);}
+.nav-hamburger.open .ham-line:nth-child(1){transform:translateY(5.5px) rotate(45deg);}
+.nav-hamburger.open .ham-line:nth-child(2){opacity:0;width:0;}
+.nav-hamburger.open .ham-line:nth-child(3){transform:translateY(-5.5px) rotate(-45deg);}
+.nav-lang-mobile{display:flex;align-items:center;gap:12px;}
+.nav-dropdown{position:fixed;inset:0;z-index:98;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;padding-right:40px;gap:22px;opacity:0;pointer-events:none;transition:opacity 0.35s var(--ease);}
+.nav-dropdown::before{content:'';position:absolute;inset:0;z-index:-1;backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);}
+body.night .nav-dropdown::before{background:rgba(17,17,21,0.9);}
+body.day   .nav-dropdown::before{background:rgba(247,249,247,0.93);}
+.nav-dropdown.open{opacity:1;pointer-events:auto;}
+.nav-dropdown a{font-weight:200;font-size:14px;letter-spacing:0.3em;text-transform:uppercase;text-decoration:none;opacity:0.75;transition:opacity 0.22s;white-space:nowrap;}
+.nav-dropdown a:hover{opacity:1;}
+body.night .nav-dropdown a{color:var(--night-white);}
+body.day   .nav-dropdown a{color:var(--day-black);}
+@media(max-width:870px){
+  #nav{grid-template-columns:auto 1fr;padding:0 20px;}
+  .nav-links{display:none;}.nav-right-wide{display:none;}.nav-ham-group{display:flex;}
+}
+@media(min-width:871px){.nav-ham-group{display:none !important;}.nav-right-wide{display:flex;}}
+
+/* ── FADE UP ── */
+.fade-up{opacity:0;transform:translateY(20px);transition:opacity 0.9s ease,transform 0.9s ease;}
+.fade-up.in{opacity:1;transform:translateY(0);}
+
+/* ══════════════════════════════
+   HERO
+══════════════════════════════ */
+#hero{
+  min-height:100vh;
+  padding-top:60px;
+  display:grid;
+  grid-template-columns:120px 1fr 280px;
+  grid-template-rows:1fr;
+  position:relative;
+  overflow:hidden;
+}
+@media(max-width:860px){
+  #hero{grid-template-columns:80px 1fr;grid-template-rows:auto auto;}
+}
+@media(max-width:560px){
+  #hero{grid-template-columns:1fr;padding-top:80px;}
+}
+
+/* LEFT — vertical "BASIC INFORMATION" text */
+.hero-left{
+  display:flex;align-items:center;justify-content:center;
+  padding:48px 0 48px 32px;
+}
+.hero-vert-title{
+  writing-mode:vertical-rl;
+  text-orientation:mixed;
+  transform:rotate(180deg);
+  font-family:'Outfit',sans-serif;
+  font-weight:200;
+  font-size:clamp(9px,1vw,11px);
+  letter-spacing:0.55em;
+  text-transform:uppercase;
+  opacity:0.35;
+  white-space:nowrap;
+}
+body.night .hero-vert-title{color:var(--night-purple-fog);}
+body.day   .hero-vert-title{color:var(--day-green-deep);}
+
+/* CENTER — name + info list */
+.hero-center{
+  display:flex;flex-direction:column;justify-content:center;
+  padding:80px 48px 80px 40px;
+}
+.hero-name-en{
+  font-family:'Cormorant Garamond',serif;font-weight:300;
+  font-size:clamp(36px,5vw,64px);letter-spacing:0.06em;line-height:1;
+  margin-bottom:4px;
+}
+.hero-name-th{
+  font-family:'Cormorant Garamond',serif;font-style:italic;font-weight:300;
+  font-size:clamp(13px,1.6vw,18px);letter-spacing:0.08em;opacity:0.4;
+  margin-bottom:40px;
+}
+.hero-info-list{display:flex;flex-direction:column;gap:0;}
+.hero-info-row{
+  display:grid;grid-template-columns:100px 1fr;
+  gap:0 24px;align-items:baseline;
+  padding:11px 0;
+  border-top:0.5px solid;
+}
+body.night .hero-info-row{border-color:var(--night-line);}
+body.day   .hero-info-row{border-color:var(--day-line);}
+.hero-info-label{
+  font-size:8px;font-weight:200;letter-spacing:0.38em;
+  text-transform:uppercase;opacity:0.38;
+}
+body.night .hero-info-label{color:var(--night-purple-fog);}
+body.day   .hero-info-label{color:var(--day-green-deep);}
+.hero-info-value{
+  font-size:12px;font-weight:300;letter-spacing:0.05em;opacity:0.82;line-height:1.5;
+}
+@media(max-width:560px){
+  .hero-info-row{grid-template-columns:90px 1fr;}
+  .hero-center{padding:40px 24px 60px;}
+}
+
+/* RIGHT — photo block + RESUME / PROFILE tags */
+.hero-right{
+  position:relative;
+  display:flex;flex-direction:column;align-items:flex-end;
+}
+@media(max-width:860px){display:none;}
+
+/* tags */
+.hero-tags{
+  display:flex;flex-direction:column;gap:8px;
+  position:absolute;top:80px;right:0;
+  z-index:2;
+}
+.hero-tag{
+  font-size:9px;font-weight:200;letter-spacing:0.5em;
+  text-transform:uppercase;
+  padding:6px 14px;
+  border:0.5px solid;
+}
+body.night .hero-tag{
+  color:var(--night-purple-fog);
+  border-color:rgba(184,176,212,0.35);
+}
+body.day .hero-tag{
+  color:var(--day-green-deep);
+  border-color:rgba(77,138,98,0.3);
+}
+
+/* photo placeholder block */
+.hero-photo-block{
+  width:100%;
+  flex:1;
+  min-height:360px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  margin-top:60px;
+}
+.hero-photo-block img{width:100%;height:100%;object-fit:cover;object-position:center top;}
+.hero-photo-ph{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;
+}
+body.night .hero-photo-ph{background:#1C1B24;}
+body.day   .hero-photo-ph{background:#E4EFE6;}
+.photo-ph-txt{font-size:10px;font-weight:200;letter-spacing:0.2em;opacity:0.28;}
+
+/* gradient fade from photo into bg on left */
+.hero-photo-block::before{
+  content:'';position:absolute;inset:0;pointer-events:none;z-index:1;
+}
+body.night .hero-photo-block::before{
+  background:linear-gradient(to right,#111115 0%,transparent 20%);
+}
+body.day .hero-photo-block::before{
+  background:linear-gradient(to right,#F7F9F7 0%,transparent 20%);
+}
+
+/* ══════════════════════════════
+   SHARED SECTION WRAPPER
+   p1 style: left sticky title, right content
+══════════════════════════════ */
+.pg-section{
+  display:grid;
+  grid-template-columns:180px 1fr;
+  gap:0 64px;
+  padding:96px 64px;
+  max-width:1200px;margin:0 auto;
+}
+@media(max-width:860px){
+  .pg-section{grid-template-columns:1fr;gap:28px 0;padding:64px 24px;}
+}
+
+.sec-title-col{position:relative;}
+.sec-title-sticky{position:sticky;top:96px;}
+.sec-num{
+  font-size:9px;font-weight:200;letter-spacing:0.4em;opacity:0.32;margin-bottom:8px;
+}
+body.night .sec-num{color:var(--night-purple-fog);}
+body.day   .sec-num{color:var(--day-green-deep);}
+.sec-title{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-weight:300;font-size:clamp(20px,2.2vw,28px);
+  letter-spacing:0.05em;line-height:1.25;opacity:0.88;
+}
+.sec-content{padding-top:2px;}
+
+/* ══════════════════════════════
+   PART 01: FAVORITES
+   — label · bullet list two-col
+══════════════════════════════ */
+.skills-block{
+  display:grid;grid-template-columns:120px 1fr;
+  gap:18px 0;align-items:start;
+  padding:16px 0;
+  border-top:0.5px solid;
+}
+body.night .skills-block{border-color:var(--night-line);}
+body.day   .skills-block{border-color:var(--day-line);}
+.skills-block:last-child{border-bottom:0.5px solid;}
+body.night .skills-block:last-child{border-color:var(--night-line);}
+body.day   .skills-block:last-child{border-color:var(--day-line);}
+.skills-label{
+  font-size:9px;font-weight:200;letter-spacing:0.35em;
+  text-transform:uppercase;opacity:0.38;padding-top:2px;
+}
+body.night .skills-label{color:var(--night-purple-fog);}
+body.day   .skills-label{color:var(--day-green-deep);}
+.skills-bullets{
+  display:grid;grid-template-columns:1fr 1fr;
+  gap:6px 24px;
+}
+@media(max-width:500px){.skills-bullets{grid-template-columns:1fr;}}
+.skill-item{
+  display:flex;align-items:baseline;gap:10px;
+  font-size:12px;font-weight:300;letter-spacing:0.04em;opacity:0.82;
+}
+.skill-item::before{
+  content:'·';opacity:0.4;flex-shrink:0;
+}
+
+/* ══════════════════════════════
+   PART 02: FILMOGRAPHY
+   — left: title + role, right: desc
+══════════════════════════════ */
+.film-list{display:flex;flex-direction:column;gap:40px;}
+.film-item{
+  display:grid;grid-template-columns:1fr 1.6fr;
+  gap:0 48px;align-items:start;
+}
+@media(max-width:640px){.film-item{grid-template-columns:1fr;gap:10px;}}
+.film-left{}
+.film-year-tag{
+  font-size:9px;font-weight:200;letter-spacing:0.35em;
+  text-transform:uppercase;opacity:0.38;margin-bottom:5px;
+}
+body.night .film-year-tag{color:var(--night-purple-fog);}
+body.day   .film-year-tag{color:var(--day-green-deep);}
+.film-title{
+  font-family:'Cormorant Garamond',serif;font-weight:400;
+  font-size:clamp(16px,1.8vw,21px);letter-spacing:0.04em;
+  opacity:0.92;line-height:1.2;margin-bottom:4px;
+}
+.film-role{
+  font-size:10px;font-weight:200;letter-spacing:0.2em;opacity:0.5;
+}
+body.night .film-role{color:var(--night-purple-fog);}
+body.day   .film-role{color:var(--day-green-deep);}
+.film-right{padding-top:18px;}
+.film-desc{
+  font-size:12px;font-weight:200;letter-spacing:0.03em;
+  opacity:0.52;line-height:1.75;
+}
+
+/* ══════════════════════════════
+   PART 03: VARIETY SHOWS
+   p1 EXP-ERIENCE style:
+   right side = vertical big year text
+   left side = month + show name
+══════════════════════════════ */
+.variety-section{
+  position:relative;
+  padding:96px 64px;
+  overflow:hidden;
+}
+@media(max-width:860px){.variety-section{padding:64px 24px;}}
+
+/* giant vertical year on right */
+.variety-year-vert{
+  position:absolute;right:40px;top:0;bottom:0;
+  display:flex;align-items:center;
+  pointer-events:none;
+  z-index:0;
+}
+.variety-year-text{
+  writing-mode:vertical-rl;
+  text-orientation:mixed;
+  font-family:'Cormorant Garamond',serif;
+  font-weight:300;
+  font-size:clamp(80px,12vw,160px);
+  letter-spacing:0.02em;
+  opacity:0.05;
+  user-select:none;
+}
+
+.variety-inner{
+  max-width:1200px;margin:0 auto;
+  position:relative;z-index:1;
+}
+.variety-header{
+  margin-bottom:52px;
+}
+.variety-sec-num{
+  font-size:9px;font-weight:200;letter-spacing:0.4em;opacity:0.32;margin-bottom:8px;
+}
+body.night .variety-sec-num{color:var(--night-purple-fog);}
+body.day   .variety-sec-num{color:var(--day-green-deep);}
+.variety-sec-title{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-weight:300;font-size:clamp(20px,2.2vw,28px);
+  letter-spacing:0.05em;opacity:0.88;
+}
+
+.variety-list{
+  display:flex;flex-direction:column;gap:0;
+  max-width:680px;
+}
+.variety-item{
+  display:grid;grid-template-columns:80px 1fr;
+  gap:0 32px;align-items:baseline;
+  padding:13px 0;
+  border-top:0.5px solid;
+}
+body.night .variety-item{border-color:var(--night-line);}
+body.day   .variety-item{border-color:var(--day-line);}
+.variety-item:last-child{border-bottom:0.5px solid;}
+body.night .variety-item:last-child{border-color:var(--night-line);}
+body.day   .variety-item:last-child{border-color:var(--day-line);}
+.variety-month{
+  font-size:9px;font-weight:200;letter-spacing:0.3em;opacity:0.38;
+}
+body.night .variety-month{color:var(--night-purple-fog);}
+body.day   .variety-month{color:var(--day-green-deep);}
+.variety-name{
+  font-size:13px;font-weight:300;letter-spacing:0.05em;opacity:0.82;
+}
+
+/* ══════════════════════════════
+   PART 04: MUSIC
+══════════════════════════════ */
+.music-list{display:flex;flex-direction:column;gap:0;}
+.music-row{
+  display:grid;grid-template-columns:1fr 140px;
+  gap:0 24px;align-items:baseline;
+  padding:13px 0;border-top:0.5px solid;
+}
+body.night .music-row{border-color:var(--night-line);}
+body.day   .music-row{border-color:var(--day-line);}
+.music-row:last-child{border-bottom:0.5px solid;}
+body.night .music-row:last-child{border-color:var(--night-line);}
+body.day   .music-row:last-child{border-color:var(--day-line);}
+.music-title{
+  font-family:'Cormorant Garamond',serif;font-style:italic;
+  font-size:clamp(14px,1.5vw,18px);letter-spacing:0.04em;opacity:0.88;
+}
+.music-meta{
+  font-size:9px;font-weight:200;letter-spacing:0.2em;opacity:0.38;text-align:right;
+}
+body.night .music-meta{color:var(--night-purple-fog);}
+body.day   .music-meta{color:var(--day-green-deep);}
+
+/* ══════════════════════════════
+   PART 05: SOCIAL / CONTACT
+══════════════════════════════ */
+.social-list{display:flex;flex-direction:column;gap:20px;}
+.social-item{
+  display:flex;align-items:center;gap:16px;
+  text-decoration:none;
+  opacity:0.75;transition:opacity 0.25s,transform 0.25s;
+}
+.social-item:hover{opacity:1;transform:translateX(4px);}
+.social-icon{width:18px;height:18px;flex-shrink:0;}
+body.night .social-icon{color:var(--night-purple-fog);}
+body.day   .social-icon{color:var(--day-green-deep);}
+.social-platform{
+  font-size:9px;font-weight:200;letter-spacing:0.38em;
+  text-transform:uppercase;opacity:0.42;min-width:60px;
+}
+body.night .social-platform{color:var(--night-purple-fog);}
+body.day   .social-platform{color:var(--day-green-deep);}
+.social-handle{
+  font-size:13px;font-weight:300;letter-spacing:0.05em;opacity:0.85;
+}
+
+/* ── FOOTER ── */
+#footer{padding:28px 48px;display:flex;align-items:center;justify-content:center;border-top:0.5px solid;}
+body.night #footer{border-color:var(--night-line);background:var(--night-bg-0);}
+body.day   #footer{border-color:var(--day-line);background:var(--day-bg-0);}
+.footer-text{font-size:9px;font-weight:200;letter-spacing:0.3em;text-transform:uppercase;opacity:0.45;text-align:center;}
+body.night .footer-text{color:var(--night-purple-fog);}
+body.day   .footer-text{color:var(--day-black);}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="nav">
+  <a class="nav-logo" href="index.html">JossGawin</a>
+  <ul class="nav-links">
+    <li><a href="#" class="active" data-i18n="nav-profile">Profile</a></li>
+    <li><a href="#" data-i18n="nav-calendar">Calendar</a></li>
+    <li><a href="#" data-i18n="nav-timeline">Timeline</a></li>
+    <li><a href="#" data-i18n="nav-works">Works</a></li>
+    <li><a href="#" data-i18n="nav-fashion">Fashion</a></li>
+    <li><a href="#" data-i18n="nav-social">Social</a></li>
+    <li><a href="gallery.html" data-i18n="nav-gallery">Gallery</a></li>
+    <li><a href="#" data-i18n="nav-contact">Contact</a></li>
+  </ul>
+  <div class="nav-right">
+    <div class="nav-right-wide">
+      <div class="lang-switch">
+        <button class="lang-btn" onclick="setLang('zh')">CN</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('th')">TH</button>
+      </div>
+      <button class="theme-toggle" onclick="toggleTheme()">
+        <div class="toggle-track"><div class="toggle-dot"></div></div>
+      </button>
+    </div>
+    <div class="nav-ham-group">
+      <div class="nav-ham-top">
+        <button class="theme-toggle" onclick="toggleTheme()">
+          <div class="toggle-track"><div class="toggle-dot"></div></div>
+        </button>
+        <button class="nav-hamburger" id="hamBtn" onclick="toggleMenu()">
+          <span class="ham-line"></span><span class="ham-line"></span><span class="ham-line"></span>
+        </button>
+      </div>
+      <div class="nav-lang-mobile">
+        <button class="lang-btn" onclick="setLang('zh')">CN</button>
+        <button class="lang-btn" onclick="setLang('en')">EN</button>
+        <button class="lang-btn" onclick="setLang('th')">TH</button>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="nav-dropdown" id="navDrop">
+  <a href="#" data-i18n="nav-profile">Profile</a>
+  <a href="#" data-i18n="nav-calendar">Calendar</a>
+  <a href="#" data-i18n="nav-timeline">Timeline</a>
+  <a href="#" data-i18n="nav-works">Works</a>
+  <a href="#" data-i18n="nav-fashion">Fashion</a>
+  <a href="#" data-i18n="nav-social">Social</a>
+  <a href="gallery.html" data-i18n="nav-gallery">Gallery</a>
+  <a href="#" data-i18n="nav-contact">Contact</a>
+</div>
+
+<!-- ══ HERO ══ -->
+<section id="hero" class="fade-up">
+
+  <!-- LEFT: vertical label -->
+  <div class="hero-left">
+    <div class="hero-vert-title" data-i18n="hero-vert">Basic Information</div>
+  </div>
+
+  <!-- CENTER: name + info list -->
+  <div class="hero-center">
+    <div class="hero-name-en">Joss Way-Ar</div>
+    <div class="hero-name-th">จอส วายอาร์ แสงเงิน</div>
+    <div class="hero-info-list">
+      <div class="hero-info-row">
+        <div class="hero-info-label" data-i18n="label-fullname">全名</div>
+        <div class="hero-info-value">Joss Way-Ar Sangngern</div>
+      </div>
+      <div class="hero-info-row">
+        <div class="hero-info-label" data-i18n="label-birthday">生日</div>
+        <div class="hero-info-value">1996 · 03 · 08</div>
+      </div>
+      <div class="hero-info-row">
+        <div class="hero-info-label" data-i18n="label-nationality">国籍</div>
+        <div class="hero-info-value" data-i18n="val-thai">泰国</div>
+      </div>
+      <div class="hero-info-row">
+        <div class="hero-info-label" data-i18n="label-hometown">家乡</div>
+        <div class="hero-info-value" data-i18n="val-hometown">泰国洛坤府</div>
+      </div>
+      <div class="hero-info-row">
+        <div class="hero-info-label" data-i18n="label-height">身高</div>
+        <div class="hero-info-value">189 cm · 80 kg</div>
+      </div>
+      <div class="hero-info-row">
+        <div class="hero-info-label" data-i18n="label-job">职业</div>
+        <div class="hero-info-value" data-i18n="val-job">演员 · 模特</div>
+      </div>
+      <div class="hero-info-row">
+        <div class="hero-info-label" data-i18n="label-agency">经纪公司</div>
+        <div class="hero-info-value">GMMTV</div>
+      </div>
+      <div class="hero-info-row">
+        <div class="hero-info-label" data-i18n="label-edu">毕业院校</div>
+        <div class="hero-info-value" data-i18n="val-edu">朱拉隆功大学国际学院传媒系</div>
+      </div>
+      <div class="hero-info-row">
+        <div class="hero-info-label" data-i18n="label-siblings">兄弟姐妹</div>
+        <div class="hero-info-value" data-i18n="val-siblings">一个哥哥</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: tags + photo -->
+  <div class="hero-right">
+    <div class="hero-tags">
+      <div class="hero-tag">Resume</div>
+      <div class="hero-tag">Profile</div>
+    </div>
+    <div class="hero-photo-block">
+      <div class="hero-photo-ph">
+        <div class="photo-ph-txt">Joss · Hero Photo</div>
+        <div class="photo-ph-txt" style="font-size:9px;opacity:0.18;">replace with actual image</div>
+      </div>
+      <!-- <img src="../asset/pic/joss/hero.jpg" alt="Joss"> -->
+    </div>
+  </div>
+
+</section>
+
+<!-- ══ 01 HOBBIES & FAVORITES ══ -->
+<div class="pg-section fade-up">
+  <div class="sec-title-col">
+    <div class="sec-title-sticky">
+      <div class="sec-num">01</div>
+      <div class="sec-title" data-i18n="part01-title">爱好<br>喜好</div>
+    </div>
+  </div>
+  <div class="sec-content">
+    <div class="skills-block">
+      <div class="skills-label" data-i18n="fav-hobby">爱好</div>
+      <div class="skills-bullets">
+        <div class="skill-item" data-i18n="sk-anime">看动漫</div>
+        <div class="skill-item">Cosplay</div>
+        <div class="skill-item" data-i18n="sk-bball">打篮球</div>
+        <div class="skill-item" data-i18n="sk-box">拳击</div>
+      </div>
+    </div>
+    <div class="skills-block">
+      <div class="skills-label" data-i18n="fav-food">最喜欢的食物</div>
+      <div class="skills-bullets">
+        <div class="skill-item" data-i18n="sk-steak">牛排</div>
+        <div class="skill-item" data-i18n="sk-beef">草饲牛肉</div>
+      </div>
+    </div>
+    <div class="skills-block">
+      <div class="skills-label" data-i18n="fav-drink">饮料</div>
+      <div class="skills-bullets">
+        <div class="skill-item" data-i18n="sk-coffee">美式咖啡</div>
+      </div>
+    </div>
+    <div class="skills-block">
+      <div class="skills-label" data-i18n="fav-fruit">水果</div>
+      <div class="skills-bullets">
+        <div class="skill-item" data-i18n="sk-avo">牛油果</div>
+        <div class="skill-item" data-i18n="sk-blue">蓝莓</div>
+        <div class="skill-item" data-i18n="sk-kiwi">猕猴桃</div>
+      </div>
+    </div>
+    <div class="skills-block">
+      <div class="skills-label" data-i18n="fav-artist">喜欢的歌手</div>
+      <div class="skills-bullets">
+        <div class="skill-item">Timethai</div>
+        <div class="skill-item">Patrick Ananda</div>
+        <div class="skill-item">Gawin Caskey</div>
+        <div class="skill-item">The Weeknd</div>
+        <div class="skill-item">BROCKHAMPTON</div>
+        <div class="skill-item">Rock Hampton</div>
+      </div>
+    </div>
+    <div class="skills-block">
+      <div class="skills-label" data-i18n="fav-song">最喜欢的歌</div>
+      <div class="skills-bullets">
+        <div class="skill-item">I'll do — David So</div>
+      </div>
+    </div>
+    <div class="skills-block">
+      <div class="skills-label" data-i18n="fav-color">最喜欢的颜色</div>
+      <div class="skills-bullets">
+        <div class="skill-item" data-i18n="sk-black">黑色</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 02 FILMOGRAPHY ══ -->
+<div class="pg-section fade-up" style="padding-top:0;">
+  <div class="sec-title-col">
+    <div class="sec-title-sticky">
+      <div class="sec-num">02</div>
+      <div class="sec-title" data-i18n="part02-title">影视<br>作品</div>
+    </div>
+  </div>
+  <div class="sec-content">
+    <div class="film-list">
+
+      <div class="film-item">
+        <div class="film-left">
+          <div class="film-year-tag">2025</div>
+          <div class="film-title">「黄金血」</div>
+          <div class="film-role" data-i18n="r-mark">饰演 MARK</div>
+        </div>
+        <div class="film-right">
+          <div class="film-desc" data-i18n="fd-placeholder">剧情介绍即将更新。</div>
+        </div>
+      </div>
+
+      <div class="film-item">
+        <div class="film-left">
+          <div class="film-year-tag">2025</div>
+          <div class="film-title">「禁忌挚友 2」</div>
+          <div class="film-role" data-i18n="r-arnold">饰演 Arnold</div>
+        </div>
+        <div class="film-right">
+          <div class="film-desc" data-i18n="fd-placeholder">剧情介绍即将更新。</div>
+        </div>
+      </div>
+
+      <div class="film-item">
+        <div class="film-left">
+          <div class="film-year-tag">2023</div>
+          <div class="film-title">「孤独社畜」</div>
+          <div class="film-role" data-i18n="r-thann">饰演 THANN SAENGSAWANG</div>
+        </div>
+        <div class="film-right">
+          <div class="film-desc" data-i18n="fd-placeholder">剧情介绍即将更新。</div>
+        </div>
+      </div>
+
+      <div class="film-item">
+        <div class="film-left">
+          <div class="film-year-tag">2023</div>
+          <div class="film-title">「午夜博物馆」</div>
+          <div class="film-role" data-i18n="r-zen">饰演 ZEN</div>
+        </div>
+        <div class="film-right">
+          <div class="film-desc" data-i18n="fd-placeholder">剧情介绍即将更新。</div>
+        </div>
+      </div>
+
+      <div class="film-item">
+        <div class="film-left">
+          <div class="film-year-tag">2022</div>
+          <div class="film-title">「MAMA GOGO」</div>
+          <div class="film-role">—</div>
+        </div>
+        <div class="film-right">
+          <div class="film-desc" data-i18n="fd-placeholder">剧情介绍即将更新。</div>
+        </div>
+      </div>
+
+      <div class="film-item">
+        <div class="film-left">
+          <div class="film-year-tag">2022</div>
+          <div class="film-title">「GOOD OLD DAYS」</div>
+          <div class="film-role">—</div>
+        </div>
+        <div class="film-right">
+          <div class="film-desc" data-i18n="fd-placeholder">剧情介绍即将更新。</div>
+        </div>
+      </div>
+
+      <div class="film-item">
+        <div class="film-left">
+          <div class="film-year-tag">2021</div>
+          <div class="film-title">「绝命玩家」</div>
+          <div class="film-role">—</div>
+        </div>
+        <div class="film-right">
+          <div class="film-desc" data-i18n="fd-placeholder">剧情介绍即将更新。</div>
+        </div>
+      </div>
+
+      <div class="film-item">
+        <div class="film-left">
+          <div class="film-year-tag">2021</div>
+          <div class="film-title">「欲火蝴蝶」</div>
+          <div class="film-role">—</div>
+        </div>
+        <div class="film-right">
+          <div class="film-desc" data-i18n="fd-placeholder">剧情介绍即将更新。</div>
+        </div>
+      </div>
+
+      <div class="film-item">
+        <div class="film-left">
+          <div class="film-year-tag">2020</div>
+          <div class="film-title">「末日之火」</div>
+          <div class="film-role" data-i18n="r-aek">饰演 AEKAONG</div>
+        </div>
+        <div class="film-right">
+          <div class="film-desc" data-i18n="fd-placeholder">剧情介绍即将更新。</div>
+        </div>
+      </div>
+
+      <div class="film-item">
+        <div class="film-left">
+          <div class="film-year-tag">2020</div>
+          <div class="film-title">「朋友界限 2」</div>
+          <div class="film-role" data-i18n="r-safe">饰演 SAFE</div>
+        </div>
+        <div class="film-right">
+          <div class="film-desc" data-i18n="fd-placeholder">剧情介绍即将更新。</div>
+        </div>
+      </div>
+
+      <div class="film-item">
+        <div class="film-left">
+          <div class="film-year-tag">2019</div>
+          <div class="film-title">「爱情复仇游戏」</div>
+          <div class="film-role" data-i18n="r-pong">饰演 PONGKUL</div>
+        </div>
+        <div class="film-right">
+          <div class="film-desc" data-i18n="fd-placeholder">剧情介绍即将更新。</div>
+        </div>
+      </div>
+
+      <div class="film-item">
+        <div class="film-left">
+          <div class="film-year-tag">2019</div>
+          <div class="film-title">「三人沉浮」</div>
+          <div class="film-role" data-i18n="r-neo">饰演 NEO</div>
+        </div>
+        <div class="film-right">
+          <div class="film-desc" data-i18n="fd-placeholder">剧情介绍即将更新。</div>
+        </div>
+      </div>
+
+      <div class="film-item">
+        <div class="film-left">
+          <div class="film-year-tag">2019</div>
+          <div class="film-title">「WOLF」</div>
+          <div class="film-role" data-i18n="r-wolf">饰演调酒师</div>
+        </div>
+        <div class="film-right">
+          <div class="film-desc" data-i18n="fd-placeholder">剧情介绍即将更新。</div>
+        </div>
+      </div>
+
+      <div class="film-item">
+        <div class="film-left">
+          <div class="film-year-tag">2018</div>
+          <div class="film-title">「朋友界限」</div>
+          <div class="film-role" data-i18n="r-safe">饰演 SAFE</div>
+        </div>
+        <div class="film-right">
+          <div class="film-desc" data-i18n="fd-placeholder">剧情介绍即将更新。</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ 03 MUSIC ══ -->
+<div class="pg-section fade-up" style="padding-top:0;">
+  <div class="sec-title-col">
+    <div class="sec-title-sticky">
+      <div class="sec-num">03</div>
+      <div class="sec-title" data-i18n="part03-title">音乐<br>作品</div>
+    </div>
+  </div>
+  <div class="sec-content">
+    <div class="music-list">
+      <div class="music-row">
+        <div class="music-title">「Lonely Mode」</div>
+        <div class="music-meta">2021</div>
+      </div>
+      <div class="music-row">
+        <div class="music-title">「安慰」</div>
+        <div class="music-meta">2018 · DMD</div>
+      </div>
+      <div class="music-row">
+        <div class="music-title">「Just You」</div>
+        <div class="music-meta">MyGoldenBlood OST · 2025</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 04 VARIETY SHOWS ══ -->
+<div class="variety-section fade-up">
+  <div class="variety-year-vert">
+    <div class="variety-year-text">2025</div>
+  </div>
+  <div class="variety-inner">
+    <div class="variety-header">
+      <div class="variety-sec-num">04</div>
+      <div class="variety-sec-title" data-i18n="part04-title">综艺节目</div>
+    </div>
+    <div class="variety-list">
+      <div class="variety-item">
+        <div class="variety-month">XX月</div>
+        <div class="variety-name">「综艺节目名称」</div>
+      </div>
+      <div class="variety-item">
+        <div class="variety-month">XX月</div>
+        <div class="variety-name">「综艺节目名称」</div>
+      </div>
+      <div class="variety-item">
+        <div class="variety-month">XX月</div>
+        <div class="variety-name">「综艺节目名称」</div>
+      </div>
+      <div class="variety-item">
+        <div class="variety-month">XX月</div>
+        <div class="variety-name">「综艺节目名称」</div>
+      </div>
+      <div class="variety-item">
+        <div class="variety-month">XX月</div>
+        <div class="variety-name">「综艺节目名称」</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ 05 SOCIAL / CONTACT ══ -->
+<div class="pg-section fade-up" style="padding-top:0;padding-bottom:120px;">
+  <div class="sec-title-col">
+    <div class="sec-title-sticky">
+      <div class="sec-num">05</div>
+      <div class="sec-title" data-i18n="part05-title">社媒<br>详情</div>
+    </div>
+  </div>
+  <div class="sec-content">
+    <div class="social-list">
+      <a class="social-item" href="https://www.instagram.com/josswayar" target="_blank" rel="noopener">
+        <svg class="social-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="5"/>
+          <circle cx="12" cy="12" r="4.5"/>
+          <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+        <span class="social-platform">Instagram</span>
+        <span class="social-handle">josswayar</span>
+      </a>
+      <a class="social-item" href="https://x.com/Josswayar" target="_blank" rel="noopener">
+        <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.746l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+        </svg>
+        <span class="social-platform">X (Twitter)</span>
+        <span class="social-handle">Josswayar</span>
+      </a>
+      <a class="social-item" href="https://www.youtube.com/@josswayar1" target="_blank" rel="noopener">
+        <svg class="social-icon" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.49 3.5 12 3.5 12 3.5s-7.49 0-9.38.55A3.02 3.02 0 0 0 .5 6.19C0 8.09 0 12 0 12s0 3.91.5 5.81a3.02 3.02 0 0 0 2.12 2.14C4.51 20.5 12 20.5 12 20.5s7.49 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14C24 15.91 24 12 24 12s0-3.91-.5-5.81zM9.75 15.5v-7l6.5 3.5-6.5 3.5z"/>
+        </svg>
+        <span class="social-platform">YouTube</span>
+        <span class="social-handle">josswayar1</span>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer id="footer">
+  <p class="footer-text">Copyright © 2026 — All rights reserved by SomenStjerne</p>
+</footer>
+
+<script>
+// ── THEME ──
+const hr = new Date().getHours();
+let isNight = hr >= 18 || hr < 6;
+document.body.classList.add(isNight ? 'night' : 'day');
+function toggleTheme(){
+  isNight = !isNight;
+  document.body.classList.toggle('night', isNight);
+  document.body.classList.toggle('day', !isNight);
+}
+
+// ── LANG ──
+const sys = (navigator.language||'en').toLowerCase();
+let lang = sys.startsWith('zh')||sys.startsWith('cmn')||sys.startsWith('yue')?'zh'
+         : sys.startsWith('th')?'th':'en';
+
+const T = {
+  zh:{
+    'nav-profile':'简介','nav-calendar':'行程','nav-timeline':'时间轴',
+    'nav-works':'作品','nav-fashion':'时尚','nav-social':'动态',
+    'nav-gallery':'画廊','nav-contact':'联系',
+    'hero-vert':'Basic Information',
+    'label-fullname':'全名','label-birthday':'生日','label-nationality':'国籍',
+    'label-hometown':'家乡','label-height':'身高体重','label-job':'职业',
+    'label-agency':'经纪公司','label-edu':'毕业院校','label-siblings':'兄弟姐妹',
+    'val-thai':'泰国','val-hometown':'泰国洛坤府',
+    'val-job':'演员 · 模特','val-siblings':'一个哥哥',
+    'val-edu':'朱拉隆功大学国际学院传媒系',
+    'part01-title':'爱好\n喜好','part02-title':'影视\n作品',
+    'part03-title':'音乐\n作品','part04-title':'综艺节目','part05-title':'社媒\n详情',
+    'fav-hobby':'爱好','fav-food':'最喜欢的食物','fav-drink':'饮料',
+    'fav-fruit':'水果','fav-artist':'喜欢的歌手','fav-song':'最喜欢的歌',
+    'fav-color':'最喜欢的颜色',
+    'sk-anime':'看动漫','sk-bball':'打篮球','sk-box':'拳击',
+    'sk-steak':'牛排','sk-beef':'草饲牛肉','sk-coffee':'美式咖啡',
+    'sk-avo':'牛油果','sk-blue':'蓝莓','sk-kiwi':'猕猴桃','sk-black':'黑色',
+    'r-mark':'饰演 MARK','r-arnold':'饰演 Arnold','r-thann':'饰演 THANN SAENGSAWANG',
+    'r-zen':'饰演 ZEN','r-aek':'饰演 AEKAONG','r-safe':'饰演 SAFE',
+    'r-pong':'饰演 PONGKUL','r-neo':'饰演 NEO','r-wolf':'饰演调酒师',
+    'fd-placeholder':'剧情介绍即将更新。',
+  },
+  en:{
+    'nav-profile':'Profile','nav-calendar':'Calendar','nav-timeline':'Timeline',
+    'nav-works':'Works','nav-fashion':'Fashion','nav-social':'Social',
+    'nav-gallery':'Gallery','nav-contact':'Contact',
+    'hero-vert':'Basic Information',
+    'label-fullname':'Full Name','label-birthday':'Birthday','label-nationality':'Nationality',
+    'label-hometown':'Hometown','label-height':'Height · Weight','label-job':'Occupation',
+    'label-agency':'Agency','label-edu':'Education','label-siblings':'Siblings',
+    'val-thai':'Thailand','val-hometown':'Nakhon Si Thammarat',
+    'val-job':'Actor · Model','val-siblings':'One older brother',
+    'val-edu':'Chulalongkorn University, Faculty of Communication Arts',
+    'part01-title':'Hobbies\n& Favs','part02-title':'Filmo-\ngraphy',
+    'part03-title':'Disco-\ngraphy','part04-title':'Variety Shows','part05-title':'Social\nMedia',
+    'fav-hobby':'Hobbies','fav-food':'Favorite Food','fav-drink':'Drink',
+    'fav-fruit':'Fruits','fav-artist':'Favorite Artists','fav-song':'Favorite Song',
+    'fav-color':'Favorite Color',
+    'sk-anime':'Anime','sk-bball':'Basketball','sk-box':'Boxing',
+    'sk-steak':'Steak','sk-beef':'Grass-fed Beef','sk-coffee':'Americano',
+    'sk-avo':'Avocado','sk-blue':'Blueberry','sk-kiwi':'Kiwi','sk-black':'Black',
+    'r-mark':'as MARK','r-arnold':'as Arnold','r-thann':'as THANN SAENGSAWANG',
+    'r-zen':'as ZEN','r-aek':'as AEKAONG','r-safe':'as SAFE',
+    'r-pong':'as PONGKUL','r-neo':'as NEO','r-wolf':'as Bartender',
+    'fd-placeholder':'Description coming soon.',
+  },
+  th:{
+    'nav-profile':'โปรไฟล์','nav-calendar':'ตารางงาน','nav-timeline':'ไทม์ไลน์',
+    'nav-works':'ผลงาน','nav-fashion':'แฟชั่น','nav-social':'โซเชียล',
+    'nav-gallery':'แกลเลอรี่','nav-contact':'ติดต่อ',
+    'hero-vert':'ข้อมูลพื้นฐาน',
+    'label-fullname':'ชื่อเต็ม','label-birthday':'วันเกิด','label-nationality':'สัญชาติ',
+    'label-hometown':'บ้านเกิด','label-height':'ส่วนสูง · น้ำหนัก','label-job':'อาชีพ',
+    'label-agency':'สังกัด','label-edu':'การศึกษา','label-siblings':'พี่น้อง',
+    'val-thai':'ไทย','val-hometown':'นครศรีธรรมราช',
+    'val-job':'นักแสดง · นางแบบ','val-siblings':'พี่ชาย 1 คน',
+    'val-edu':'จุฬาลงกรณ์มหาวิทยาลัย คณะนิเทศศาสตร์',
+    'part01-title':'งานอดิเรก\nและสิ่งที่ชอบ','part02-title':'ผลงาน\nภาพยนตร์',
+    'part03-title':'ผลงาน\nเพลง','part04-title':'รายการวาไรตี้','part05-title':'โซเชียล\nมีเดีย',
+    'fav-hobby':'งานอดิเรก','fav-food':'อาหารที่ชอบ','fav-drink':'เครื่องดื่ม',
+    'fav-fruit':'ผลไม้','fav-artist':'ศิลปินที่ชอบ','fav-song':'เพลงโปรด',
+    'fav-color':'สีที่ชอบ',
+    'sk-anime':'อ่านการ์ตูน','sk-bball':'บาสเกตบอล','sk-box':'มวย',
+    'sk-steak':'สเต็ก','sk-beef':'เนื้อวัว','sk-coffee':'อเมริกาโน่',
+    'sk-avo':'อโวคาโด','sk-blue':'บลูเบอรี่','sk-kiwi':'กีวี','sk-black':'สีดำ',
+    'r-mark':'รับบท MARK','r-arnold':'รับบท Arnold','r-thann':'รับบท THANN SAENGSAWANG',
+    'r-zen':'รับบท ZEN','r-aek':'รับบท AEKAONG','r-safe':'รับบท SAFE',
+    'r-pong':'รับบท PONGKUL','r-neo':'รับบท NEO','r-wolf':'รับบทบาร์เทนเดอร์',
+    'fd-placeholder':'รายละเอียดเร็วๆ นี้',
+  }
+};
+
+function setLang(l){
+  lang=l;
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const v=T[l]?.[el.dataset.i18n];if(v)el.textContent=v;
+  });
+  document.querySelectorAll('.lang-btn').forEach(b=>{
+    const m={'CN':'zh','EN':'en','TH':'th'};
+    b.classList.toggle('active',m[b.textContent]===l);
+  });
+}
+setLang(lang);
+
+// ── NAV SCROLL ──
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',window.scrollY>10);
+},{passive:true});
+
+// ── HAMBURGER ──
+let menuOpen=false;
+function toggleMenu(){
+  menuOpen=!menuOpen;
+  document.getElementById('hamBtn').classList.toggle('open',menuOpen);
+  document.getElementById('navDrop').classList.toggle('open',menuOpen);
+}
+document.addEventListener('click',e=>{
+  if(!menuOpen)return;
+  if(!e.target.closest('#nav')&&!e.target.closest('#navDrop')){
+    menuOpen=false;
+    document.getElementById('hamBtn').classList.remove('open');
+    document.getElementById('navDrop').classList.remove('open');
+  }
+});
+
+// ── INTERSECTION OBSERVER ──
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});
+},{threshold:0.05});
+document.querySelectorAll('.fade-up').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
+HTMLEOF
+echo "done: $(wc -l < /mnt/user-data/outputs/profile-joss.html) lines"
